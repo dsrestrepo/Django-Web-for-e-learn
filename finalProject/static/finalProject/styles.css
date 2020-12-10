@@ -1,0 +1,324 @@
+#items_list{
+    display: block;
+}
+#back_btn{
+    width: 30%;
+    margin-bottom: 30px;
+}
+.test_div,.register_div{
+    padding: 20px !important; 
+    height: auto !important; 
+    margin-top: 20px !important;
+}
+.login_div{
+    padding: 20px !important;
+    height: 530px !important;
+    margin-top: 20px !important;
+}
+.survey_div,.test_final_div{
+    display: flex;
+    justify-content: center;
+}
+.test_form_div{
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    padding-bottom: 60px;
+}
+.topic {
+    display: flex;    
+}
+.login_button{
+    margin-left: 40%; 
+    width: 30%;
+}
+.imagediv {
+    width: 30%;
+    min-width: 170px;
+}
+
+.descriptiondiv{
+    display: flex;
+    padding-left: 4%;
+    flex-direction: column;  
+}
+
+.listitems{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.responsive {
+    width: 100%;
+    height: auto;
+    min-width: 150px;
+    min-height: 150px;
+}
+#TuringMachine {
+    width: 60% !important;
+    height: auto;
+    margin-bottom: 40px;
+    margin-top: 20px;
+}
+.responsive2 {
+    width: 80%;
+    height: auto;
+    min-width: 150px;
+    min-height: 150px;
+}
+.posts-all{
+    align-items: center;
+    display: flex; 
+    flex-direction: column;
+}
+.card{
+    background: rgb(61,255,0);
+    background: linear-gradient(90deg, rgba(61,255,0,0.4009978991596639) 0%, rgba(58,148,242,1) 52%, rgba(61,255,0,0.48783263305322133) 100%);
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.card-link{
+    color: blue;
+}
+#comments_div{
+    border-top: solid 1px black;
+}
+#post-content{
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+#post-form, #message-form{
+    display: flex;
+    width: 100%;
+    padding-top:  10px;
+    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    border-bottom: solid 3px whitesmoke;
+    margin-bottom: 10px;
+}
+.profile_atributes{
+    color: black;
+}
+.course_content_div{
+    display: flex;
+    width: 100%;
+    padding-top: 10px;
+    align-items: center;
+    align-content: center;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.course_content_div_recommender{
+    display: flex;
+    width: 100%;
+    padding-top: 10px;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 200px;
+}
+
+#message_card{
+    background: cornsilk;
+}
+#message_card:hover{
+    cursor: pointer !important;
+}
+pre{
+    height: 300px;
+    width: 80%;
+    min-width: 200px;
+} 
+#items_list{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+#table_id{
+    overflow-y: scroll;
+    height: 350px;
+
+}
+.table{
+    width: 100%;
+}
+.chart{
+    margin-top: 20px;
+    position: relative; 
+    height:60vh; 
+    width:60vw; 
+    background-color: whitesmoke;
+}
+
+
+
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center
+}
+
+.rating>input {
+    display: none
+}
+
+.rating>label {
+    position: relative;
+    width: 1em;
+    font-size: 3vw;
+    color: #FFD600;
+    cursor: pointer
+}
+
+.rating>label::before {
+    content: "\2605";
+    position: absolute;
+    opacity: 0
+}
+
+.rating>label:hover:before,
+.rating>label:hover~label:before {
+    opacity: 1 !important
+}
+
+.rating>input:checked~label:before {
+    opacity: 1
+}
+
+.rating:hover>input:checked~label:before {
+    opacity: 0.4
+}
+
+@media only screen and (max-width: 1000px) {
+
+    
+    .rating>label {
+        position: relative;
+        width: 1em;
+        font-size: 5vw;
+        color: #FFD600;
+        cursor: pointer
+    }
+
+}
+
+
+@media only screen and (max-width: 800px) {
+
+    body {
+       font-size: 3vw;
+    }
+    .coursetitle,.coursetitle_profile{
+        font-size:5vw;
+    }
+    h1,h2 {
+        font-size: 5vw;
+    }
+    h3 {
+        font-size: 4vw;
+    }
+    h4 {
+        font-size: 3vw;
+    }
+    h5{
+        font-size: 3vw;
+    }
+    h6 {
+        font-size: 3vw;
+    }    
+    iframe{
+        height:100%;
+        width:100%;
+        min-width: 200px;
+        min-height: 170px;
+    }
+    .equation{
+        width: 80%;
+        overflow-x: auto;
+    }
+    .chart{
+        margin-top: 20px;
+        position: relative; 
+        height:80vh; 
+        width:80vw; 
+        background-color: whitesmoke;
+    }
+    
+    .rating>label {
+        position: relative;
+        width: 1em;
+        font-size: 6.3vw;
+        color: #FFD600;
+        cursor: pointer
+    }
+
+}
+
+@media only screen and (max-width: 600px) {
+    .profile_buttons{
+        font-size: 2vw;
+    }
+    #items_list{
+        display: flex;
+        flex-direction: column;
+    }    
+    #table_id{
+        overflow-y: scroll;
+        height: 200px;
+
+    }
+    #TuringMachine {
+        width: 100% ;
+        margin-bottom: 20px;
+        margin-top: 15px;
+    }
+    
+    .rating>label {
+        position: relative;
+        width: 1em;
+        font-size: 8vw;
+        color: #FFD600;
+        cursor: pointer
+    }
+
+}
+
+@media only screen and (max-width: 550px) {   
+    .rating>label {
+        position: relative;
+        width: 1em;
+        font-size: 9vw;
+        color: #FFD600;
+        cursor: pointer
+    }
+}
+
+@media only screen and (max-width: 400px) {
+
+    .communications{
+        font-size:4vw !important;
+    }
+    .coursetitle_profile{
+        font-size:4vw;
+    }
+    .profile_buttons{
+        font-size: 2vw;
+    }
+    
+    #regression_code, .code-box{
+        height: 150px;
+    }
+       
+    .rating>label {
+        position: relative;
+        width: 1em;
+        font-size: 10vw;
+        color: #FFD600;
+        cursor: pointer
+    }
+
+}

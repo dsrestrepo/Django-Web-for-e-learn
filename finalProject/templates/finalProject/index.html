@@ -1,0 +1,122 @@
+{% extends "finalProject/layout.html" %}
+{% load static %}
+
+{% block body %}
+<h1>Choose Between:</h1>
+
+<div class="alert alert-info" role="alert">
+    <div class="topic">
+        <div class="imagediv">
+            <img src="{% static 'finalProject/Statistics.jpg' %}" width="100%" class="responsive">
+        </div>
+        <div class="descriptiondiv">
+            <div class="title">
+                <h1 class="coursetitle"><a href="{% url 'course' 'Statistics'%}" class="alert-link"> Statistics </a></h1>
+            </div>
+            <div class="description">
+                If you want to know about topic like:
+                <ul>
+                    <li>statistical inference</li>
+                    <li>Probability</li>
+                    <li>Linear Algebra</li>
+                    <li>Regressions</li>
+                </ul>
+                <h2><a href="{% url 'course' 'Statistics'%}" class="btn btn-success"> Click Here </a> </h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <div class="topic">
+        <div class="imagediv">
+            <img src="{% static 'finalProject/Computer Science.jpg' %}" width="100%" class="responsive">
+        </div>
+        <div class="descriptiondiv">
+            <div class="title">
+                <h1 class="coursetitle"><a href="{% url 'course' 'Computer Science'%}" class="alert-link"> Computer Science </a> </h1>
+            </div>
+            <div class="description">
+                If you want to know about topic like:
+                <ul>
+                    <li>Intro to CS</li>
+                    <li>Programming Basics theory</li>
+                    <li>Programming Basics python</li>
+                    <li>UML diagrams</li>
+                </ul>
+                <h2><a href="{% url 'course' 'Computer Science'%}" class="btn btn-success"> Click Here </a> </h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <div class="topic">
+        <div class="imagediv">
+            <img src="{% static 'finalProject/Data Science.jpg' %}" width="100%" class="responsive">
+        </div>
+        <div class="descriptiondiv">
+            <div class="title">
+                <h1 class="coursetitle"><a href="{% url 'course' 'Data Science'%}" class="alert-link"> Data Science </a></h1>    
+            </div>
+            <div class="description">
+                If you want to know about topic like:
+                <ul>
+                    <li>R Programming</li>
+                    <li>Python Programming</li>
+                    <li>Artificial Inteligence</li>
+                    <li>Machine Learning</li>
+                </ul>
+                <h2><a href="{% url 'course' 'Data Science'%}" class="btn btn-success"> Click Here </a> </h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <div class="topic">
+        <div class="imagediv">
+            <img src="{% static 'finalProject/Communications.jpg' %}" width="100%" class="responsive">
+        </div>
+        <div class="descriptiondiv">
+            <div class="title">
+                <h1 class="coursetitle communications"><a href="{% url 'course' 'Communications'%}" class="alert-link">Communications</a> </h1>
+            </div>
+            <div class="description">
+                If you want to know about topic like:
+                <ul>
+                    <li>Telecomunicatios Theory</li>
+                    <li>Information Theory</li>
+                    <li>Digital Communications</li>
+                    <li>Analogic Communications</li>
+                </ul>
+                <h2><a href="{% url 'course' 'Communications'%}" class="btn btn-success"> Click Here </a> </h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert alert-info" role="alert">
+    <div class="topic">
+        <div class="imagediv">
+            <img src="{% static 'finalProject/social_web.jpg' %}" width="100%" class="responsive">
+        </div>
+        <div class="descriptiondiv">
+            <div class="title">
+                <h1 class="coursetitle communications"><a href="{% url 'social_web'%}" class="alert-link">Recommender System</a> </h1>
+            </div>
+            <div class="description">
+                Bulild and Try a hybrid recommender system:
+                <ul>
+                    <li>Data selection and pre-processing</li>
+                    <li>Content Based</li>
+                    <li>Collaborative Filtering</li>
+                    <li>Hybrid Recommender</li>
+                </ul>
+                <h2><a href="{% url 'social_web'%}" class="btn btn-success"> Click Here </a> </h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

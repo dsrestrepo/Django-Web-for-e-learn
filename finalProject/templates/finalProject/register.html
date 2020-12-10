@@ -1,0 +1,33 @@
+{% extends "finalProject/layout.html" %}
+
+{% block body %}
+<div class="redistervid survey_div" >
+    <div class="card text-white bg-primary mb-3 col-xs-12 col-sm-8 col-md-5 register_div">
+
+        <h2 style="padding-bottom:110px ;">Register</h2>
+
+        {% if message %}
+            <div>{{ message }}</div>
+        {% endif %}
+
+        <form action="{% url 'register' %}" method="post" style="padding-bottom: 60px;">
+            {% csrf_token %}
+            <div class="form-group">
+                <input class="form-control" autofocus type="text" name="username" placeholder="Username">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="email" name="email" placeholder="Email Address">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="password" name="password" placeholder="Password">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
+            </div>
+            <input class="btn btn-success" type="submit" value="Register">
+        </form>
+
+        Already have an account? <a href="{% url 'login' %}" style="color: aliceblue;">Log In here.</a>
+    </div>
+</div>
+{% endblock %}

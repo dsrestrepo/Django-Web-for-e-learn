@@ -1,0 +1,807 @@
+{% extends "finalProject/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+<!-- Statistics course -->
+<div class="course_div">
+    <h2>Welcome to {{cname}}: Hybrid Recommender System</h2>
+    <div id="items_list" style="display: flex; flex-direction: column;">
+        <a class="btn btn-outline-success item" data-id="section1">Data selection and pre-processing</a>
+        <div class="alert alert-dark course_content_div" id="section1">
+
+            <h1>Data selection and pre-processing</h1>
+            <strong> note: in this course we assume that you know the basics of python programming, if you don´t know things like variable, define a variable, if conditionals, functions, etc. You can find info here: <a href="{% url 'course' 'Computer Science'%}"> Computer Science </a></strong>
+            
+            <!-- video -->
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/BHbj6FQ35b8" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+
+            <h4>What is?</h4>
+            This is the first step before create any recommender system, and the most important part because are the basics of all
+            for the data selection process we need to know wich data do we need and the quality of that data, for this example we will use
+            the: 
+            <a href="http://files.grouplens.org/datasets/movielens/ml-1m.zip">Movie leans</a>
+            but you can find more examples in:
+            <ul>
+                <li><a href="https://cseweb.ucsd.edu/~jmcauley/datasets.html">Datasets for recommender systems</a></li>
+                <li><a href="https://github.com/caserec/Datasets-for-Recommender-Systems/blob/master/README.md">github</a></li>
+                <li><a href="http://snap.stanford.edu/data/web-Amazon-links.html">Amazon</a></li>
+            </ul>
+            there are many types of formar to share data, the most common are:
+            <ul>
+                <li>Comma Separated Values (CSV)</li>
+                <li>Excel files (XLS)</li>
+                <li>JavaScript Object Notation (JSON)</li>
+                <li>Structured Query Language (SQL)</li>
+                <li>tab-separated values (TSV)</li>
+            </ul> 
+            We recommend to use a jupyter notebook to disply each step in a different block to see how compiles, but you can also use other IDE like
+            visual studio, but don't forget to print in console the results you want to display, you can find all those included in:
+            <a href="https://www.anaconda.com/products/individual">Anaconda</a>
+
+            <h4>The datasets can be loaded using python's pandas library</h4>
+                    
+            <h6>Load dataset using Pandas:</h6>
+            <pre style="height: 370px;"><code class="language-python">
+#libraies
+import pandas as pd
+import numpy as np
+#load a csv dataset in the path 'movies_45000/ratings_small.csv'
+ratings_df=pd.read_csv('movies_45000/ratings_small.csv') #this returns a variable called a dataframe
+#see the fist 3 rows
+ratings_df.head(3)
+#Repeat the process with more datasets to complement:
+links_df=pd.read_csv('movies_45000/links_small.csv')
+links_df.head()
+metadata_df=pd.read_csv('movies_45000/movies_metadata.csv')
+metadata_df.head(3)
+            </code></pre>
+            
+            <h4>Data Understanding:</h4>
+            Once we have the data in a variable (dataframe) we can analyze the data you can see examples of plots, statistics, etc in the: <a href="{% url 'course' 'Data Science'%}"> Data Science </a> 
+            <h4>Data pre-processing</h4>
+            Once we know the data we know wich data is util for us, and start a cleaning process where we can transform the data, create new columns, delete empty or anomalous data, etc.
+    
+            <h6>Data pre pre-processing using python:</h6>
+            <pre style="height: 700px;"><code class="language-python">
+"""drop, rename, and change data type"""
+ratings_df = ratings_df.drop(columns='timestamp') #drop timestamp
+ratings_df.head(3)
+
+metadata_df = metadata_df[['adult','genres', 'id', 'original_language','poster_path','title','overview']] #drop not used columns
+metadata_df = metadata_df.rename(columns={'id': 'tmdbId'}) #rename id to merge
+metadata_df.head(3)
+
+metadata_df['tmdbId'] = pd.to_numeric(metadata_df['tmdbId'], errors='coerce') #id to numeric
+metadata_df.head(3)
+
+links_df = links_df.drop(columns='imdbId') #drop not used column
+
+"""Merge"""
+ratings_df = ratings_df.merge(links_df) #merge rating_df with links_df
+ratings_df.shape
+ratings_df.sort_values(by=['movieId'],ascending=True).head(10) #sort by movie id, just to confirm data integrity
+
+ratings_df = ratings_df.merge(metadata_df) #merge the new ratings_df with metadata_df
+#ratings_df.shape
+ratings_df = ratings_df.drop(columns='movieId') # movieId is not uset anymore
+ratings_df.sort_values(by=['userId'],ascending=True).head(10) #sort by userId to verify data integrity
+
+"""Take the genres (cleaning extra space, removing numbers, punctuation, and other words not used)"""
+metadata_df['genres'] = metadata_df['genres'].str.replace(r'[^\w\s]+', '') #remove punctuation
+metadata_df['overview'] = metadata_df['overview'].str.replace(r'[^\w\s]+', '') #remove punctuation
+metadata_df
+
+ratings_df['genres'] = ratings_df['genres'].str.replace(r'[^\w\s]+', '') #remove punctuation
+ratings_df['overview'] = ratings_df['overview'].str.replace(r'[^\w\s]+', '') #remove punctuation
+ratings_df
+
+metadata_df['genres'] = metadata_df['genres'].str.replace('\d+', '') #take just the genres (not id's)
+metadata_df
+
+ratings_df['genres'] = ratings_df['genres'].str.replace('\d+', '') #take just the genres (not id's)
+ratings_df
+
+metadata_df['genres'] = metadata_df['genres'].str.replace('id', '') #remove id
+metadata_df['genres'] = metadata_df['genres'].str.replace('name', '') #remove name  
+metadata_df['genres'] = metadata_df['genres'].str.replace('Science Fiction', 'ScienceFiction') #join Science Fiction
+metadata_df['genres'] = metadata_df['genres'].str.strip() 
+metadata_df['genres'] = metadata_df['genres'].str.replace('    ', ' ') #change multy space for one space
+metadata_df
+
+ratings_df['genres'] = ratings_df['genres'].str.replace('id', '') #remove id
+ratings_df['genres'] = ratings_df['genres'].str.replace('name', '') #remove name
+ratings_df['genres'] = ratings_df['genres'].str.replace('Science Fiction', 'ScienceFiction') #join Science Fiction
+ratings_df['genres'] = ratings_df['genres'].str.strip()
+ratings_df['genres'] = ratings_df['genres'].str.replace('    ', ' ')
+ratings_df
+
+"""Creating new columns (this case will be a one hot encoding of genres)"""
+#import library
+from sklearn.feature_extraction.text import CountVectorizer
+corpus = ratings_df['genres'] #We define the colum to Encode 
+
+vectorizer = CountVectorizer() #We'll use a count vectorizer instance
+generes_onehot = vectorizer.fit_transform(corpus) #pass the genres to the instance
+tags = vectorizer.get_feature_names() #get the tags (genres)
+generes = generes_onehot.toarray() #get the array
+
+generes_onehot = pd.DataFrame(generes, columns=tags) #create the genres one hot dataframe
+generes_onehot 
+
+ratings_df = ratings_df.join(generes_onehot) #join the one hot genres to the ratings dataframe
+ratings_df.sort_values(by=['userId'],ascending=True).head(10) #sort by user
+
+ratings_df[ratings_df['userId'] == 1].sort_values(by=['tmdbId'],ascending=True).head(10)
+
+"""See and clean null values as NA or NaN"""
+ratings_df.isna().sum() #see columns with na or nan values
+
+ratings_df = ratings_df.dropna() #drop null values
+ratings_df.isna().sum()
+"""Split Data for testing and validation"""
+from sklearn.model_selection import train_test_split
+ratings_df, test_df = train_test_split(ratings_df, test_size=0.2)#split 80% train 20% test
+</code></pre>            
+
+        </div>
+
+        <a class="btn btn-outline-success item" data-id="section2">Content Based</a>
+        <div class="alert alert-dark course_content_div" id="section2">
+
+            <h1>Content Based</h1>
+            The content based is a type of recommender system where we use the content of the recommender item and the last item or the items of the user to find 
+            similar items for example using a product description, or a movie, or game or movie genre, in this case we will se examples of the movie description, and the movie genres,
+            to do that we will:
+            <ol>
+                <li>use the Word2Vec with the genres of each movie based on the movies each user've seen, so we need a iterable list to tran as says in the <a href="https://radimrehurek.com/gensim/models/word2vec.html">Gensim Word2Vec documentation</a>, so to do that we need:
+                  <ul>
+                    <li>A list of the movies and his genres (Because wi will train content based, so we will use the movie id and also the genres) 
+                    </li>
+                  </ul>
+                </li>
+                <li>use the <a href ="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.cosine_similarity.html">sklearn cosine similarity </a> with the description (overview) of each movie, but as we can see in the documentation we need a numei array so we can transform the words using TF-ITF. 
+                  <ul>
+                    <li>so we need to preprocess the description of each movie</li>
+                  </ul>
+                </li>
+              </ol>
+              Inspired in:
+              <ol>
+              <li><a href="https://www.sciencedirect.com/science/article/pii/S1877750318300036">HRS-CE: A hybrid framework to integrate content embeddings in recommender systems for cold start items</a></li>
+              <li><a href="https://medium.com/@fernando.bugni/using-metadata-with-word2vec-to-get-recommendations-in-movielens-3ae45afaf957">
+              Using Metadata with Word2Vec to get recommendations in MovieLens</a></li>
+              <li><a href="https://arxiv.org/pdf/1411.2738.pdf">word2vec Parameter Learning Explained</a></li>
+              <li><a href="https://medium.com/analytics-vidhya/content-based-recommender-systems-in-python-2b330e01eb80">Content-based Recommender Systems in Python</a></li>
+              <li><a href="https://www.tandfonline.com/doi/abs/10.4103/02564602.2010.10876780">Content-based File-type Identification Using Cosine Similarity and a Divide-and-Conquer Approach</a></li>
+              </ol>
+        <h4>Word2Vec:</h4> The word2vec is an algorithm that found a solution to one of the bigest problems in the world of the natural Language processing, this is how to pass text to numerica data, but not just to numeric data,
+        the word2vec algorithm calcules the realtion between words in a numeric space so we know that for example "one" is closer to "five" than "elephant", and "elephant" is closer to "mose" than "one", this help us to find
+        clusters of data, topics, etc.
+        in this case the goal is to train the word2vec model with the movies that all users've seen and his genres, so the model will learn wich movie is closer to any to a specific genre of genres, and also
+        wich movie is clores to other movies.
+        to immplement the word2vec wee need to organize these list of words, the implementation is:
+        
+        <h6>Content based movie recommender using word2vec:</h6>
+        <pre style="height: 700px;"><code class="language-python">
+"""take just the better rated movies 3 stars or more"""
+movies_df = ratings_df.copy() #copi the dataframe to use it later in other filters
+ratings_df = ratings_df[ratings_df['rating'] >= 3] #We will use just the rating of 3 or more
+ratings_df.head()
+
+"""data pre processing to get the array used in word2vec train"""
+
+users = ratings_df['userId'].unique().tolist() #take the users
+#print(users)
+
+movies_by_user = [] #array of dictionary of movies and users
+for user in users:
+  user_df = ratings_df[ratings_df['userId'] == user] #take the movies whatched by the user
+  user_df = user_df[['tmdbId', 'genres']] #take the columns that we need
+  #user_df = user_df[['tmdbId', 'overview', 'genres']] #take the columns that we need
+  #user_df['genres'] = user_df['overview'] + user_df['genres']
+  #user_df = user_df.drop(columns=['overview'])
+  user_df = user_df.set_index('tmdbId') 
+  movies_by_user.append(user_df.to_dict()) #create the dict movie id : genres
+#movies_by_user
+
+#the genres title is just noise, so we will remove this and use just the conten of each dictionary
+train_list = []
+for user_dict in movies_by_user:
+  train_list.append(user_dict['genres'])
+#train_list
+
+# clean the spaces in the dictionary: ' ' and '    '
+for user_dict in train_list:
+  values = []
+  for key,value in user_dict.items():
+    user_dict[key] = value.replace('    ', ' ')
+
+#conver the dictionary to arrays
+final_train_list = []
+for user_dict in train_list:
+    values = []
+    for key,value in user_dict.items():
+    for genre in value.strip().split(' '):
+        values.append(genre)
+        values.append(str(int(key)))
+    final_train_list.append(values)
+#final_train_list
+
+"""load word2vec model and train it"""
+#libraries
+from gensim.test.utils import common_texts
+from gensim.models.word2vec import Word2Vec
+
+#create the model
+model = Word2Vec(final_train_list, window=5, min_count=2, workers=4)
+
+"""function that returns similar to movies"""
+def most_similar_movie(movieId):
+    print("Similar of "+ratings_df[ratings_df['tmdbId'] == int(movieId)].iloc[0]['title'])
+    return [(int(x[0]), ratings_df[ratings_df['tmdbId'] == int(x[0])].iloc[0]['title']) for x in model.wv.most_similar(movieId)]
+
+most_similar_movie('7340')
+
+"""function that returns similar to genres"""
+def most_similar_gener(genres):
+  count = 0
+  for genre in genres:
+    if count == 0:
+      vector = model[genre]
+      count = count + 1
+    else:
+      vector = model[genre] + vector
+  print("Similar of ",list(genres))
+  #print(model.wv.most_similar([vector]))
+  resp = []
+  for x in model.wv.most_similar([vector]):
+    try:
+      int(x[0])
+      resp.append((int(x[0]), ratings_df[ratings_df['tmdbId'] == int(x[0])].iloc[0]['title']))
+    except:
+      print(x)
+  return resp
+
+most_similar_gener(['Horror', 'Drama', 'Crime'])
+
+        </code></pre>            
+        <h4>For the movie recommender based in the description we will use:</h4>
+        <h4>TF-IDF:</h4> This is the term frequency–inverse document frequency, is a really simple ecaution to calcule how important is a word in a sentence based in how many times the word appears in the sentence
+        and how many times the word appears in all the data set, so if a word appears many times in the dataset the word is not relevant, but if it appears so little for example 
+        one time that word is not relevant, the ecaution is:
+
+        <div class="equation">
+            \[tfidf( t, d, D ) = tf( t, d ) \times idf( t, D )\]
+        </div>
+        
+        <h4>Cosine Similarity: </h4> This is one of the most used techniques to find the similarity between two elements in a list of elements, in this case is the words of movie with id t, and elements of movie 
+        with id t where e and t are any movie, if we calculate the cosine similarity will give us a number between 0 and 1 where one is the maximus relation and 0 is no realtion, the ecuation for a movies 3 and t, where the movies 
+        have words represented as a numeric array(is here when we see the importance of the TF-IDF to convert from words to numeric).
+
+        <div class="equation">
+            \[\cos ({\bf t},{\bf e})= { {\bf t} {\bf e} \over \|{\bf t}\| \|{\bf e}\|} = \frac{ \sum_{i=1}^{n}{ {\bf t}_i{\bf e}_i} }{ \sqrt{ \sum_{i=1}^{n}{ ( {\bf t}_i)^2} } \sqrt{\sum_{i=1}^{n}{({\bf e}_i)^2}} }\]
+        </div>
+        
+        <h6>Content based movie recommender using cosine similarity:</h6>
+        <pre style="height: 700px;"><code class="language-python">
+"""pre-processing data for cosine similarity"""
+movies = movies_df['tmdbId'].unique().tolist() #take the users
+#print(movies)
+
+metadata_df = metadata_df[metadata_df['tmdbId'].isin(movies)]
+metadata_df.head(3)
+
+#Clean Metadata
+from gensim.parsing.preprocessing import remove_stopwords
+metadata_df['overview'] = metadata_df['overview'].str.replace(r'[^\w\s]+', '') #remove punctuation
+metadata_df['overview'] = metadata_df['overview'].apply(lambda x: remove_stopwords(x))
+metadata_df['genres'] = metadata_df['genres'].str.strip()
+#metadata_df
+
+description_df = metadata_df[['tmdbId', 'overview','title']]
+description_df
+
+"""TF-IDF"""
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+tfidf = TfidfVectorizer(stop_words='english')#tfidf instance
+
+#Construct the required TF-IDF matrix by applying the fit_transform method on the overview feature
+overview_matrix = tfidf.fit_transform(description_df['overview'])
+overview_matrix.shape
+
+from sklearn.metrics.pairwise import linear_kernel
+similarity_matrix = linear_kernel(overview_matrix,overview_matrix)
+similarity_matrix
+
+from sklearn.metrics.pairwise import cosine_similarity
+#movies index mapping
+mapping = pd.Series(description_df.index,index = description_df['tmdbId'])
+mapping
+
+"""Create the function"""
+def most_similar_description(movie_input):
+    movie_input = int(movie_input)
+    movie_index = mapping[movie_input]
+    #get similarity values with other movies
+    #similarity_score is the list of index and similarity matrix
+    similarity_score = list(enumerate(similarity_matrix[movie_index]))
+    #sort in descending order the similarity score of movie inputted with all the other movies
+    similarity_score = sorted(similarity_score, key=lambda x: x[1], reverse=True)
+    # Get the scores of the 15 most similar movies. Ignore the first movie.
+    similarity_score = similarity_score[1:15]
+    #return movie names using the mapping series
+    movie_indices = [i[0] for i in similarity_score]
+    movie_ids = description_df['tmdbId'].iloc[movie_indices].tolist()
+    return ([(int(movie),description_df[description_df['tmdbId'] == movie]['title'].to_string(index=False).strip()) for movie in movie_ids])
+
+most_similar_description('15')
+        </code></pre>            
+           
+        <h4>For the integration: </h4> for the integration we need to add the results of those filters in a list and delete the repeated data
+        <h6>Content based integration:</h6>
+        <pre style="height: 700px;"><code class="language-python">
+"""define the function"""
+def get_genres(movie_id):
+    return metadata_df[metadata_df['tmdbId'] == movie_id].genres.to_string(index=False).strip()
+print(get_genres(98))
+
+def content_based(movie_id):
+    #search by simmilar description
+    description_sim = most_similar_description(movie_id)
+    #search by simmilar movie name
+    movie_sim = most_similar_movie(movie_id)
+    set_1 = set(description_sim)
+    set_2 = set(movie_sim)
+    moviesSet2_notin_Set1 = list(set_2 - set_1)
+    combined_sim = description_sim + moviesSet2_notin_Set1
+    #search by simmilar genres
+    genres_string = get_genres(int(movie_id)) #take the genres of the movie
+    genres = genres_string.split()
+    #print(genres)
+    #use the function
+    genres_sim = most_similar_gener(genres)
+    set_1 = set(combined_sim)
+    set_2 = set(genres_sim)
+    moviesSet2_notin_Set1 = list(set_2 - set_1)
+    combined_sim = combined_sim + moviesSet2_notin_Set1
+    #don't repeat movies
+    combined_similar_movies = list(set(combined_sim))
+    return combined_similar_movies
+
+        </code></pre>            
+                       
+        </div>
+
+        <a class="btn btn-outline-success item" data-id="section3">collaborative filtering</a>
+        <div class="alert alert-dark course_content_div" id="section3">
+
+            <h1>collaborative filtering</h1>
+
+            <h4>What is?</h4>
+            The colaborative filters is a type of recommender system that gives a recommendation based on what other users with simmilar profiles
+            and analyze what items these users likes the most, an example is: 
+            If i like "The Avengers" and "Avengers: Endgame" and other user likes "The Avengers", "Avengers: Endgame" and "Avengers: Infinity War" there is a big 
+            probability that i like "Avengers: Infinity War" so that will be the recommendation.
+            <br>
+            There are many ways to find this similitude:
+            <ul>
+                <li>Cosine Similarity</li>
+                <li>Pearson Correlation</li>
+                <li>Euclidean Distence</li>
+                <li>etc...</li>
+            </ul>             
+            <h4>User-movies rating matrix: </h4> to find the similarity mesure is important to organize the data an usual method is a matrix 
+            where we can see the movies that all users has seen, and his ratings, this method is part of the memory based methods where we compare
+            from the matrix the values and calculate the relation
+            <h4>Correlation</h4>The Correlation is a important metric used to compare is part of the pandas library and help us to compare
+            the ratings of movies in common between users x and y and in an array of movies's rating giving us -1 is the users are absolutley different and 1 if the users
+            are the same, the formula is:
+            
+            <div class="equation">
+                \[r = \frac{\sum_{ i=1 }^{ n }(x_i - \bar{x} )(y_i - \bar{y} ) }{ \sqrt[]{ \sum_{ i=1 }^{n }(x_i - \bar{x } )^2 \sum_{ i=1 }^{ n }(y_i - \bar{y} )^2} } \]
+            </div>
+            
+        
+            <h6>colaborative Filtering movie recommender using correlation:</h6>
+            <pre style="height: 900px;"><code class="language-python">
+"""you can search for a movie with"""
+#see if movie exist:
+for title in metadata_df['title']:
+    if "The Imi" in title:
+        print(f"We Have the movie: {title}")
+        
+# search the column of the data frame with the movie
+metadata_df[metadata_df['title']=='The Imitation Game'][['tmdbId','title']]
+
+"""create the user profile"""
+movies_df = movies_df[['title','tmdbId', 'rating','userId']]
+
+user = [
+    #movie : rating
+    {'tmdbId':862, 'rating':3}, #toys story
+    {'tmdbId':8844, 'rating':  2}, #jumanji
+    {'tmdbId':123025, 'rating': 5}, #batman
+    {'tmdbId':142061, 'rating': 4.9}, #batman
+    {'tmdbId':205596, 'rating': 5}, #the imitation game
+    {'tmdbId':58574, 'rating': 4.5}, #sherlock
+    {'tmdbId':10528, 'rating': 4.9},#sherlock
+    {'tmdbId':82702, 'rating': 4.8}, #How to train
+    {'tmdbId':19995, 'rating': 2}, #avatar
+    {'tmdbId':18239, 'rating': 1}, #The Twilight
+    {'tmdbId':24021, 'rating': 1.2}, #The Twilight
+    {'tmdbId':935, 'rating': 4}, #Dr. Strange
+    {'tmdbId':76338, 'rating': 5}, #Thor
+    {'tmdbId':12, 'rating': 3.8},#nemo
+    {'tmdbId':13, 'rating': 4.2}#forest gump
+]
+user = pd.DataFrame(user)
+user
+
+final_traing_df = movies_df.copy()#During the explanation process the dataframe will be affected, so a copy is created
+movies_df.head()
+
+def add_user(user, movies_df):
+    #add titles
+    titles = user['tmdbId'].tolist()
+    titles = [metadata_df[metadata_df['tmdbId'] == title]['title'].to_string(index=False).strip() for title in titles]
+    user['title'] = titles
+    #add user id
+    user_id = movies_df['userId'].max()+1
+    user['userId'] = user_id
+    movies_df = movies_df.append(user, ignore_index = True)
+    return user, movies_df
+
+user, movies_df = add_user(user, movies_df) #add the user and get the new movies_df and user_df
+user
+
+movies_df.sort_values(by=['userId'],ascending=False).head(10)
+
+"""Verify the movies in common between users because if users have one movie with the same rating
+doesn't mean that have the same profile, it could be just a coincidence"""
+
+users_with_movies_common = {}
+users = movies_df['userId'].unique().tolist() #take the users
+
+for user_ in users:
+  user_df = movies_df[movies_df['userId'] == user_] #take the movies whatched by the user
+  user_df = user_df[['tmdbId', 'userId']] #take the columns that we need
+  user_movies_common = user_df[user_df['tmdbId'].isin(user['tmdbId'].tolist())]
+  users_with_movies_common[user_df['userId'].iloc[0]] = len(user_movies_common)  #create the dict movie id : genres
+
+users_with2=[]
+for user_id,number_movies in users_with_movies_common.items():
+    if number_movies > 2:
+        users_with2.append(user_id)
+users_with2
+
+users_with2 = pd.DataFrame(users_with2, columns=['userId'])
+users_with2
+
+#filter movies_df to users that saw 3 common movies or more
+movies_df = movies_df[movies_df['userId'].isin(users_with2['userId'].tolist())]
+movies_df
+
+"""Creathe the users-movies rating matrix"""
+#creating the user-item interaction matrix
+movie_matrix_UII = movies_df.pivot_table(index='tmdbId', columns='userId', values='rating')
+movie_matrix_UII.head(5)
+
+"""Take user and calculate the correlation"""
+#take my user
+myUser = movies_df['userId'].max()
+#Take the column of the user we want
+myUser = movie_matrix_UII[myUser]
+myUser
+
+#calculate the correlation
+similar_to_user = movie_matrix_UII.corrwith(myUser)
+
+#create the data frame
+corr_user = pd.DataFrame(similar_to_user, columns=['Correlation'])
+#drop the na
+corr_user.dropna(inplace=True)
+#drop the user:
+myUserId = movies_df['userId'].max()
+corr_user = corr_user.drop([myUserId]) 
+#see the correlation df
+corr_user.head(50)
+
+#Most rated users
+corr_user['Correlation'] = corr_user['Correlation']
+
+corr_user = corr_user.sort_values('Correlation', ascending=False)
+corr_user.head(50)
+
+corr_user = corr_user[0:10]
+corr_user
+
+movies_df = movies_df[movies_df['userId'].isin(corr_user.index.values.tolist())]
+movies_df['Correlation'] = movies_df['userId'].apply(lambda x: corr_user['Correlation'].loc[x])
+movies_df
+
+"""Create the weight that give us the relevance of each movie
+as we know the 1 is the maximus correlation and 5 stars is the maximus rating so the maximus weight 
+if we multiply is 5 divide by 5 to normalize the maximus is 1"""
+movies_df['weight'] = (movies_df['rating']*movies_df['Correlation'])/5# deinf weight
+movies_df = movies_df.sort_values('weight', ascending=False) #sort by weight
+movies_df
+
+"""Give the top 10"""
+colaborative_filter_df=movies_df[['tmdbId','title']][0:10] #take the top 10
+colaborative_filter_df.head(15)
+
+#give the format from dataframe to list of tuples[(movieid,movie),(...)]
+colaborative_movies = colaborative_filter_df['tmdbId'].unique().tolist()
+colaborative_filter_movies = []
+for movie in colaborative_movies:
+    movie = int(movie)
+    colaborative_filter_movies.append((movie,colaborative_filter_df[colaborative_filter_df['tmdbId'] == movie]['title'].to_string(index=False)))
+colaborative_filter_movies
+
+"""Create a function that does all that process"""
+def get_collaborative_filtering(user):
+    #to keep the original df
+    movies_df = final_traing_df.copy()
+    
+    #take the dict user, create a dataframe os user and add the dataframe to movies_df
+    user, movies_df = add_user(user, movies_df)
+    users_with_movies_common = {}
+    users = movies_df['userId'].unique().tolist() #take the users
+
+    for user_ in users:
+      user_df = movies_df[movies_df['userId'] == user_] #take the movies whatched by the user
+      user_df = user_df[['tmdbId', 'userId']] #take the columns that we need
+      user_movies_common = user_df[user_df['tmdbId'].isin(user['tmdbId'].tolist())]
+      users_with_movies_common[user_df['userId'].iloc[0]] = len(user_movies_common)  #create the dict movie id : genres
+
+    users_with2=[]
+    for user_id,number_movies in users_with_movies_common.items():
+        if number_movies > 2:
+            users_with2.append(user_id)
+    users_with2 = pd.DataFrame(users_with2, columns=['userId'])
+    #users that saw 3 common movies or more
+    movies_df = movies_df[movies_df['userId'].isin(users_with2['userId'].tolist())]
+    #creating the user-item interaction matrix
+    movie_matrix_UII = movies_df.pivot_table(index='tmdbId', columns='userId', values='rating')
+    #take my user
+    myUser = movies_df['userId'].max()
+    #Take the column of the user we want
+    myUser = movie_matrix_UII[myUser]
+    #calculate the correlation
+    similar_to_user = movie_matrix_UII.corrwith(myUser)
+    #create the data frame
+    corr_user = pd.DataFrame(similar_to_user, columns=['Correlation'])
+    #drop the na
+    corr_user.dropna(inplace=True)
+    #drop the user:
+    myUserId = movies_df['userId'].max()
+    corr_user = corr_user.drop([myUserId]) 
+    #Most rated movies
+    corr_user['Correlation'] = corr_user['Correlation']
+    corr_user = corr_user.sort_values('Correlation', ascending=False)
+    #take just the most correlated
+    corr_user = corr_user[0:10]
+    #take from movies_df just the movies with highest correlation
+    movies_df = movies_df[movies_df['userId'].isin(corr_user.index.values.tolist())]
+    #add the correlation column to the dataframe
+    movies_df['Correlation'] = movies_df['userId'].apply(lambda x: corr_user['Correlation'].loc[x])
+    #calculate the weight with the rating
+    movies_df['weight'] = (movies_df['rating']*movies_df['Correlation'])/5
+    #sort by weight
+    movies_df = movies_df.sort_values('weight', ascending=False)
+    #take the top movies:
+    colaborative_filter_df=movies_df[['tmdbId','title']][0:10]
+    #give the format to the movies
+    colaborative_movies = colaborative_filter_df['tmdbId'].unique().tolist()
+    colaborative_filter_movies = []
+    for movie in colaborative_movies:
+        movie = int(movie)
+        colaborative_filter_movies.append((movie,colaborative_filter_df[colaborative_filter_df['tmdbId'] == movie]['title'].to_string(index=False)))
+    return colaborative_filter_movies
+    
+
+user2 = [
+    #movie : rating
+    {'tmdbId':862, 'rating':3}, #toys story
+    {'tmdbId':8844, 'rating':  2}, #jumanji
+    {'tmdbId':123025, 'rating': 5}, #batman
+    {'tmdbId':142061, 'rating': 4.9}, #batman
+    {'tmdbId':205596, 'rating': 5}, #the imitation game
+    {'tmdbId':58574, 'rating': 4.5}, #sherlock
+    {'tmdbId':10528, 'rating': 4.9},#sherlock
+    {'tmdbId':82702, 'rating': 4.8}, #How to train
+    {'tmdbId':19995, 'rating': 2}, #avatar
+    {'tmdbId':18239, 'rating': 1}, #The Twilight
+    {'tmdbId':24021, 'rating': 1.2}, #The Twilight
+    {'tmdbId':935, 'rating': 4}, #Dr. Strange
+    {'tmdbId':76338, 'rating': 5}, #Thor
+    {'tmdbId':12, 'rating': 3.8},#nemo
+    {'tmdbId':13, 'rating': 4.2}#forest gump
+]
+user2 = pd.DataFrame(user)
+
+prediction = get_collaborative_filtering(user2)
+prediction
+
+            </code></pre>            
+        
+
+        </div>
+
+        <a class="btn btn-outline-success item" data-id="section4">Hybrid (Integration)</a>
+        <div class="alert alert-dark course_content_div" id="section4">
+
+            <h1>Integration</h1>
+            For the implementation we need to integrate all those filters that we saw, there are many methods, but will use just a random 
+            choise between the top movies of colaborative filtering and content based:
+            
+            <h6>colaborative Filtering movie recommender using correlation:</h6>
+            <pre style="height: 600px;"><code class="language-python">
+"""Integration"""
+def get_hybrid_recommendation(user,movie):
+    movie = str(movie)
+    content_based_movies = content_based(movie)
+    if len(user.index) > 6:
+        collaborative_filter_movies = get_collaborative_filtering(user)
+        #add the content_based and collaborative movies
+        set_1 = set(content_based_movies)
+        set_2 = set(collaborative_filter_movies)
+        moviesSet2_notin_Set1 = list(set_2 - set_1)
+        combined_sim = content_based_movies + moviesSet2_notin_Set1
+        #don't repeat movies
+        combined_similar_movies = list(set(combined_sim))
+        #if the list has more then 10 movies just the first 10
+        if len(combined_similar_movies)>10:
+            return combined_similar_movies[0:10]
+        return combined_similar_movies
+    #if the list has more then 10 movies just the first 10
+    if len(content_based_movies)>10:
+        return content_based_movies[0:10]
+    #if not enougth movies, just return the content based movies
+    return content_based_movies
+        
+get_hybrid_recommendation(user,'15')
+            </code></pre>            
+        </div>
+
+
+        
+        <a class="btn btn-outline-success item" data-id="section5">Try movie recommender</a>
+        <div class="alert alert-dark course_content_div_recommender" id="section5">
+            
+            {% if user.is_authenticated %}
+            <h4>wich was the last movie you saw:</h4>
+            <form id="movie_search" style="display: flex;">
+            <input class="form-control" id="seach_bar" type="text" placeholder="Search Movie" aria-label="Search">
+            <input type="submit" value="search" class="btn btn-primary" style="height: 40px;">
+            </form>
+            <div id="#seach_bar_message"></div>
+            <div class="alert alert-dark course_content_div" id="subsection5">
+                <div id="movie_list"></div>
+    
+            </div>
+            <div class="alert alert-dark course_content_div" id="subsection52">
+                <div id="recommendation_list"></div>
+    
+            </div>
+            
+            {% else %}
+            <!-- Search form -->
+            <h4>wich was the last movie you saw:</h4>
+            <strong>Note: you are not logged in, so you just can use the contant based </strong>
+            <form id="movie_search" style="display: flex;">
+            <input class="form-control" id="seach_bar" type="text" placeholder="Search Movie" aria-label="Search">
+            <input type="submit" value="search" class="btn btn-primary" style="height: 40px;">
+            </form>
+            <div id="#seach_bar_message"></div>
+            <div class="alert alert-dark course_content_div" id="subsection5">
+                <div id="movie_list"></div>
+    
+            </div>
+            <div class="alert alert-dark course_content_div" id="subsection52">
+                <div id="recommendation_list"></div>
+    
+            </div>
+            {% endif %}
+        </div>
+
+
+    </div>
+</div>
+
+
+<!-- comments -->
+<div id="comments_div" style="margin-top: 20px;">
+    <h5>Comments: </h5>
+
+    {% if user.is_authenticated %}
+    <!--New Post -->
+    <div class="post-form">
+        <form id="post-form">
+            <strong>{{request.user.username}}: </strong>
+            <textarea class="form-control" id="post-content" rows="4" placeholder="Type a new post..."
+                style="width: 60%;"></textarea>
+            <input id="post-course" type="hidden" value="Social">
+            <input type="submit" class="btn btn-info" id="submitButton" style="margin-bottom: 30px ;" />
+        </form>
+        <div id="result" style="color:tomato;">
+            <!-- in case of error sending message here-->
+        </div>
+    </div>
+    {% endif %}
+    <!-- comments -->
+    <div class="posts-all">
+        {% for post in page_obj %}
+        <div class="card" style="width: 80vw; padding-top: 15px;" id="card-{{post.id}}">
+            <div class="card-body" style="color: black; ">
+                <h5 class="card-text" id="content-{{post.id}}">{{ post.content }}</h5>
+                {% if user.is_authenticated %}
+                <h7 class="card-title"><a href="{% url 'profile' post.user %}" class="card-link"> {{post.user}}</a></h7>
+                |
+                {% else %}
+                <h7 class="card-title"><a href="{% url 'login' %}" class="card-link"> {{post.user}}</a></h7> |
+                {% endif %}
+                <h7 class="card-title"> in: <a href="{% url 'course' post.course %}"
+                        class="card-link">{{post.course}}</a> </h7> |
+                <h7 class="card-title">at: {{post.timestamp}}</h7>|
+            </div>
+        </div>
+        <br>
+        {% empty %}
+        <div class="alert alert-warning" role="alert">
+            <h3>No comments :(</h3>
+        </div>
+        {% endfor %}
+        <!-- Pagination -->
+        <div class="pagination">
+            <span class="step-links">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+
+                        {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li>
+                        <li class="page-item"><a class="page-link"
+                                href="?page={{ page_obj.previous_page_number }}">previous</a></li>
+                        {% endif %}
+
+                        {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last
+                                &raquo;</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </span>
+        </div>
+        <div>
+            <span class="current" style="color: black;">
+                <strong>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</strong>
+            </span>
+        </div>
+
+    </div>
+
+
+    {% endblock%}
+
+    {% block script %}
+        
+    {% if user.is_authenticated %}
+    <!--Logged-->
+    <script src="{% static 'finalProject/social_web_logged.js' %}"></script>    
+    <script src="{% static 'finalProject/new_comment.js' %}"></script>
+    {% else %}
+    <!--Not logged-->
+    <script src="{% static 'finalProject/social_web.js' %}"></script>    
+    {% endif %}
+    <!--All-->
+    <script src="{% static 'finalProject/prism.js' %}"></script>
+
+    {% endblock %}

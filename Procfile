@@ -1,0 +1,1 @@
+web: gunicorn webFinalDavid.wsgi --log-file-

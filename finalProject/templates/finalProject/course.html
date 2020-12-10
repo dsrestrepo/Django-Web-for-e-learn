@@ -1,0 +1,2435 @@
+{% extends "finalProject/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+{% if in_course %}
+<!-- If user is in the course, show the course -->
+
+<!-- Statistics course -->
+{% if cname == "Statistics" %}
+<div class="course_div">
+    <h2>Welcome to {{cname}}</h2>
+    <div id="items_list" style="display: flex; flex-direction: column;">
+        <a class="btn btn-outline-success item" data-id="section1">statistical inference</a>
+        <div class="alert alert-dark course_content_div" id="section1">
+
+            <h1>statistical inference</h1>
+
+            <!-- video -->
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/P2rGhfvzTvU" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+
+            <h4>What is?</h4>
+            The Statistical Inference is a way of analyzing properties of a population based on a sample
+            <br>
+            for example we can know the distribution of probabilities to know if a hypotesis is true, or see the
+            behavior of a population based just on a sample of a data
+            <h4>We can see applications in:</h4>
+            <ul>
+                <li>Investigation in general: </li> Used to find the confidence results of a investigation
+                <li>Data Science: </li> Used to abstract the behavior of all a entire population data form a sample
+                <li>Life sciences: </li> Used to make test for example of a vaccine or to understand the distribution of
+                some
+                characteristics like genome in a population from a sample.
+            </ul>
+            <h4>Example:</h4>
+            We are working with a laboratory to find out what effect can have a new product on the weight of the people
+            of this city
+            We have the hypotesis that this new product decrease people's weight, but we can't do a test for all the
+            city
+            But we can use the statistical inference, taking a sample of all the city and with that sample prove our
+            hypothesis.
+            <h6>Null Hypothesis: </h6> This means that the mean doesn't have any change respect to how it soposed to be
+            <div>
+                \[H_{0}\]
+            </div>
+            <h6>Alternate hypothesis: </h6> That means that our mean has change (less or more) respect to what it was
+            supposed to be without the product, for our example this means that the product will change the mean weight
+            less or more
+            <div>
+                \[H_{1} \neq H_{0}\]
+            </div>
+
+            <h4>Sample Data:</h4>So we will take two samples to see if the products works
+            <ul>
+                <li>sample using the product</li>
+                <li>sample without using the product</li>
+            </ul>
+            <h4>How do we know it works?</h4>
+            <h6>Central Limit Theorem</h6> This says that the mean of a sample if the sample is significant will have a
+            normal distribution with mean at the original and a similar
+            standard deviation, specifically the original standard deviation over the square root of the sample size
+            <h6>Example: </h6>
+            <h6>If our population is: </h6> \[P(x) = \frac{1}{ {\sigma \sqrt {2\pi } } }e^{ { { - \left( {x - \mu }
+            \right)^2 } \mathord{\left/ {\vphantom { { - \left( {x - \mu } \right)^2 } {2\sigma ^2 } } } \right.}
+            {2\sigma ^2 } } }\]
+            with mean: \[\mu\] and standard deviation: \[\sigma \neq 0\]
+            <h6>our sample will be: </h6> mean \[\bar{x_{n}} = \mu \] and standard deviation \[\frac{\sigma}{\sqrt{n}}\]
+            with n the size of the sample
+            Then if we take a random sample z: \[z = \frac{\bar{x_{n}}-\mu}{\frac{\sigma}{\sqrt{n}}}\]
+
+            <div>
+
+            </div>
+            We can see an example here:
+            <h6>CLT Matlab:</h6>
+            <pre><code class="language-matlab">
+%%Generate data:
+data = 100;
+bits = randi([0 1],1,numBits); %generate 2 values in 0 or 1 with a normal distribution
+
+%statistical inference:
+simulations = 300;%we will take 300 samples our mean suld be 0.5
+total_ceros = zeros(1,simulations) %ceros
+total_ones = zeros(1,simulations) %ones
+mean_x = zeros(1,simulations) %mean for each simulation simulación
+
+for c = 1:simulations
+    x = bitsGenerator(bits);
+    ceros = find(x==0);
+    ones = find(x==1);
+    total_ceros(c) = length(ceros);
+    total_ones(c) = length(ones);
+    mean_x(c) = mean(x);
+end
+
+%print the results:
+mean_ceros = mean(total_ceros)
+mean_ones = mean(total_ones)
+mean_100 = mean(mean_x)
+
+%histogram of mean_x y should be normal distribution with mean 0.5
+figure(2)
+histogram(mean_x)
+                    </code></pre>
+            <h6>CLT Python:</h6>
+            <pre><code class="language-python">
+import numpy as np
+import matplotlib.pyplot as plt 
+#define our sample
+sample = [100,1000,10000]
+#Take our samples from a normal distribution with mean 0, standard deviation 1
+for i in sample:
+    mu, sigma = 1, 0.5 # mean and standard deviation
+    normal_sample = np.random.normal(mu, sigma, i)
+    #plot histogram
+    plt.title(f'{i} samples')
+    plt.hist(normal_sample, bins=60, alpha=1,  linewidth=1)
+    plt.grid(True)
+    plt.show()
+    plt.clf()
+                    </code></pre>
+            <h6>CLT R:</h6>
+            <pre style="height: 200px;"><code class="language-r">
+#define our sample
+sample = c(100,1000,10000)	
+#Take our samples from a normal distribution with mean 0, standard deviation 1
+par(mfrow=c(1,3))
+for (i in sample){
+    normal_sample = rnorm(i, mean = 1, sd=1) 
+    hist(normal_sample, xlab = "value", ylab = "samples", main = paste("samples", i , sep = " "))
+}
+                    </code></pre>
+            <h4>significance test</h4> But how we could be totally sure it is not a coincidence?
+            <h6>p-value: </h6> defines how remote is the possibility that our alternative hypothesis is wrong without
+            being just lucky usually 0.05 or less
+            <h6>t-test</h6> Is a way to determine that p-value
+            <h4>Finally we can see some code lines so you can work this example in R</h4>
+            <h6>We have in R:</h6>
+            <pre style="height: 150px;"><code class="language-r" >
+sample(populationRange,size)	#gives a sample of the total data		
+t.test(populatioToTest,populationOfControl)		#do the t test
+t.test(populatioToTest,populationOfControl)$statistic	#find the t-value of the statistical t
+t.test(populatioToTest,populationOfControl)$p.val   #find the p-value
+                    </code></pre>
+            <h6>We alse have the possibility in python with scipy:</h6>
+            <pre style="height: 150px;"><code class="language-python">
+from scipy import stats	#load the library		
+stats.ttest_ind(populatioToTest,populationOfControl)	#do the t test and returns
+#the t-value of the statistical t
+#the p-value
+                    </code></pre>
+
+        </div>
+
+        <a class="btn btn-outline-success item" data-id="section2">Probability</a>
+        <div class="alert alert-dark course_content_div" id="section2">
+
+            <h1>Probability</h1>
+
+            <h4>What is?</h4>
+            The Probability is a science that try to predict an event givig a posbility from 0 to 1 or from 0% to 100%
+            being 0 no possibility og that event and 1 or 100% an event that ve happend or will happend for sure
+            <h4>We can see applications in almost all the fields of the science for example:</h4>
+            <ul>
+                <li>Data Science: </li> Is a commun way to predict results, there are many probabilistic algotihms such
+                as Naive Bayes that help us organize our data, or predict.
+                <li>Life sciences: </li> So used in medicine to understand people behavior, in epidemiology for example
+                to see the distribution
+                in the transmission rate of a new virus, or to undertsand new diagnostics and the probability of error
+                <li>Social Science</li> Used to see how people will spend and predict market variations
+                <li>physics</li> Used in particle physics to help understand the position, or for example used by
+                Boltzman to understand
+                the behavior and distribution of particules in some spac
+                <li>Many more...</li>
+            </ul>
+            <h4>To understand the Probability we need to know some definitions:</h4>
+            <h6>sample space</h6> This tell us al the possible results, we use an S={...} to write this, for example
+            if we if we toss a dice, of sample space will be:
+            \[S_{d} = \left\{ 1,2,3,4,5,6 \right\}\]
+            <h6>simple event</h6> This is a sub-group of the sample space given by some rules, for example if we are
+            playing
+            parchis and we need a numer from 5 onwards then our simple event will be:
+            \[A_{d} = \left\{ 5,6 \right\}\]
+            <h6>The probability</h6> Are the chances of an event happening, for example for the last sample space if
+            we have the same probability for all the dice faces we can use the
+            <strong>Laplace's rule</strong> Say that the probability of an event is the possible cases over the total
+            then our probability of A will be:
+            \[P(A)=\frac{ \sum_{ i=0 }^A Ai }{ \sum_{ i=0 }^S Si }\]
+            \[P(A_{d}) = \frac{ 2 }{ 6 }\]
+
+            <h6>compound event</h6> We could have events compose from two or more simple events example: with simple
+            event A and B:
+            <ul>
+                <li>Event A or Event B \[A \cup B\]</li>
+                <li>Event A and Event B \[A \cap B\]</li>
+                <li>Event A given Event B \[A \mid B\]</li>
+            </ul>
+            <h6>probability distributions</h6> Tell us the probability of events given a sample space this could be:
+            <ul>
+                <li>Continuous like 1,2,3,4,5,6 (like an histogram)</li>
+                <li>Discreet like 0-1 being 0 the the area under the curve</li>
+            </ul>
+            <h6>probability distribution in R:</h6>
+            <pre style="height: 200px;"><code class="language-r">
+#if we have our data in a var X
+#Empirical Cummulative Density Function (ECDF)
+myCDF = ecdf(x)
+#we can see if we plot:
+plot(ecdf(x))
+#we can calculate the probability between some events like:
+mean(x <= a)
+                    </code></pre>
+            <h6>binomial distribution</h6> If we want to know the possibility of some events given some attempts:
+            \[f(x)=\left(\begin{array}{c}n\\ x\end{array}\right) p^{x} q^{n-x}\]
+            \[\left(\begin{array}{c}n\\ x\end{array}\right) = \frac{n!}{x!(n-x)!}\]
+            with:
+            <ul>
+                <li>p=Probability of our event</li>
+                <li>q=probability of failure (1-p)</li>
+                <li>n=attempts</li>
+                <li>x=numer of success events in n</li>
+            </ul>
+            <h4>Bayes Theorem:</h4> The Bayes Theorem is too a big part of the probability and is the most crazy one
+            We start from a we start from a priori knowledge to know if an event will happend, for example if you are
+            playing
+            with a dice and the dice keep being a 6 in many examples, the frequentist probability tell us that those
+            events were
+            independet, and the next one will be independet, but bayes uses that extra information to estimate the next
+            move.
+
+            \[P(A \mid B) = \frac{P(B \mid A) \cdot P(A)}{P(B)}\]
+
+            <h6>Example: </h6> With the Bayes theorem the examples are the most exciting part, for example, If you go
+            for a medical examination for a strange disease
+            and they tell you that the test came out positive with a 99% chance of error, you may think that you are
+            almost certainly sick
+            but using the bayes theorem if you know that the disease is so stange most than the error chance of the test
+            you may think that:
+            <div class="equation">
+                \[P(Disease\mid Positive) = \frac{P(Positive \mid Disease) \cdot P(Disease)}{P(Positive)}\]
+            </div>
+            where:
+            <div class="equation">
+                \[P(Positive) = P(Positive \mid Disease) + P(Positive \mid NotDisease)\]
+            </div>
+            if we know that the Probability of disease is so slow the probability is considerably lower
+        </div>
+
+        <a class="btn btn-outline-success item" data-id="section3">Linear Algebra</a>
+        <div class="alert alert-dark course_content_div" id="section3">
+
+            <h1>Linear Algebra</h1>
+            <h4>What is?</h4>
+            The linear algebra is the a science that studies linear ecuations, linear models, vector and matrix
+            operations
+            so we can use it to abstract models that hel´pu us to understand the world, take data sturctures, solve
+            multiple ecuations of a fastest way
+            <h4>We can see applications in almost all the fields of the science too:</h4>
+            <ul>
+                <li>Data Science: </li>
+                if you enroll in the course of data science and computer science you'll see many data srcutres, models
+                and ways to use this to predict, and undertstand the world
+                <li>Life sciences: </li>
+                We can combine the statistical inference with linear algebra to understand the variables of a entire
+                populations
+                see patrons in the behavior of that population and find constants
+                <li>Social Science: </li>
+                With the linear algebra we can see predictions of how markets works, how peple buys, etc.
+                <li>physics: </li>
+                We can use the linear algebra to solve ecuations, know constants analyze experimental results,etc.
+                <li>Many more...</li>
+            </ul>
+            <h4>To understand the Linear Algebra we need to know some definitions:</h4>
+            <h6>Vector: </h6> A vector is a array of real numbers, this can be use in informatics as a way to organize
+            seies of numbers, in a 1xn
+            matrix, but you can see regular aplications of a vector in math and phisics as a way to represent a magnitud
+            and a phase in a
+            mutidimensional space, for exmple in the Reals we can represent a number as a vector of 1x1 dimension, but
+            also you can represent it in
+            two dimensions usually in math represented as a i in the axis y, and we can increase those values till
+            infinite:
+            \[2 Dimensions: (x,y) = x + y\widehat{i} \]
+            \[3 Dimensions: (x,y,z) = x + y\widehat{i} + z\widehat{j} \]
+            \[n Dimensions: (x,y,...,n) = x + y\widehat{i} + ... + n \widehat{n} \]
+
+            <h6>Matrix: </h6> A matrix is an array of many Vectors represented by mxm dimensions, we can see a vector as
+            a 1xm dimension's array, this is
+            an important way to organize sets of data and wee neet to know they operations to for example, solve many
+            ecuations, do operations between, etc.
+            so we have:
+            \[\begin{bmatrix}a & a1 & a2 & ... & an \\ b & b1 & b2 & ... & bn \\ ... \\ m & m1 & m2 & ... &
+            mn\end{bmatrix}\]
+            <h6>Array operations: </h6>
+
+            <h6>scalar</h6>
+            <div class="equation">
+                \[a .\begin{bmatrix}a & a1 & a2 & ... & an \\ b & b1 & b2 & ... & bn \\ ... & ...& ...& ...& ...\\ m &
+                m1 & m2 & ... & mn\end{bmatrix}\]
+            </div>
+
+            <h6>Transpose</h6>
+            <div class="equation">
+                \[\begin{bmatrix} a & a1 & a2 & ... & an \\ b & b1 & b2 & ... & bn \\ ... & ...& ...& ...& ...\\ m & m1
+                & m2 & ... & mn \end{bmatrix}^{T} = \begin{bmatrix} a & b & c & ... & m \\ a1 & b1 & c1 & ... & m1 \\
+                ... & ...& ...& ...& ...\\ an & bn & cn & ... & mn \end{bmatrix}\]
+            </div>
+
+            <h6>Matrix Multiply</h6>
+            <div class="equation">
+                \[\begin{bmatrix}a1,1 & a1,2 & ... & a1,n \\ a2,1 & a2,2 & ... & a2,n \\ ... & ...& ...& ...\\ am,1 &
+                am,2 & ... & am,n\end{bmatrix}\cdot \begin{bmatrix}b1,1 & b1,2 & ... & b1,m \\ b2,1 & b2,2 & ... & b2,m
+                \\ ... & ...& ...& ...\\ bn,1 & bn,2 & ... & bn,m\end{bmatrix}=\begin{bmatrix}\sum a1,i \cdot bi,1 & ...
+                & \sum a1,i \cdot bi,m \\ ... & ... & ... \\ \sum am,i \cdot bi,1 & ... & \sum am,i \cdot
+                bi,\end{bmatrix}\]
+            </div>
+
+            <h6>Identity</h6>
+            <div class="equation">
+                \[ I = \begin{bmatrix}1 & 0 & ... & 0 \\ 0 & 1 & ... & 0 \\ ... & ...& ...& ...\\ 0 & 0 & ... & 1
+                \end{bmatrix}\]
+            </div>
+            
+            <h6>Inverse</h6>
+            If we have the matrix X:
+            \[inverse = x^{-1}\]
+            where:
+            \[X \cdot X^{-1} = I\]
+            Used to solve matrix ecuation's systems
+
+            <h6>Arrays in R:</h6>
+            <pre style="height: 150px;"><code class="language-r">
+#we can create a vecto as
+x = c(1:5) #vector from 1 to 5
+x= c(1,5,8,10) #vector 1x4
+#or a matrix as:
+#matrix of 2 rows and 3 columns, but it could be fron any x any dimension
+M = matrix( c(1,2,3,4,5,6), nrow = 2, ncol = 3, byrow = TRUE)
+N = matrix( c(1,2,3,4,5,6), nrow = 3, ncol = 2, byrow = TRUE)
+#we can see if we plot:
+#The operations can be made by:
+#scalar:
+S = 3*M
+#Matrix Multiply:
+R = M %*% N
+#transpose:
+R = t(R)
+#inverse:
+R = solve(R) 
+                    </code></pre>
+
+        </div>
+
+        <a class="btn btn-outline-success item" data-id="section4">Regressions</a>
+        <div class="alert alert-dark course_content_div" id="section4">
+
+            <h1>Regressions</h1>
+            <h4>What is?</h4>
+            The Regressions era ways to predict some realtions between variables, is also a way to find constants in
+            some experiments,
+            or to see how the value of a variable changes depending of other variables to estimate future unknow
+            results.
+            <h4>We can see applications in fields like:</h4>
+            <ul>
+                <li>Data Science: </li>
+                Help us to make predictions or calculate unknow data based on the actual data
+                <li>Life sciences: </li>
+                Help us to find constants and analyze the projections of experiments
+                <li>physics: </li>
+                Help us to find constants
+                <li>Many more...</li>
+            </ul>
+            <h4>There are many class of regressions:</h4>
+            <h6>Linear Regressions: </h6>
+            The linear regression is a type of regression formed by the equation of a line of the form:
+            \[Y = aX + b + \epsilon\]
+            If you have multiple ecuations you can solve them using methods as we saw in linear algebra:
+            \[Y = aX\] if X and Y are matix you can fin a as:
+            \[a = Y^{-1} X\]
+            you can see an example of a linear regression here:
+            <h6>Linear regression in R:</h6>
+            <pre id="regression_code" style="margin-bottom: 30px;"><code class="language-r">
+#linear regession
+#Y = mx+b
+x=c(1,2,3,4,5,6,7,8,9,10)
+y=c(0.9,2.3,2.8,4.5,5.4,5.6,7.1,8.4,8.7,9.9)
+data=data.frame(x=x,y=y)
+data
+plot(data$x,data$y,col='blue')
+regression = lm(y~x, data = data)
+summary(regression)
+abline(regression,col="orange")
+            </code></pre>
+
+            <h6>Data: </h6>
+            <div id="table_id">
+                <table class="table table-dark">
+                    <thead>
+                        <tr>
+                            <th scope="col">X</th>
+                            <th scope="col">Y</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-table">
+
+                    </tbody>
+                </table>
+            </div>
+            <canvas class="chart" id="myChart"></canvas>
+        </div>
+        {% if user.is_authenticated %}
+        {% if final_test %}
+        <h3>You've sent you final exam, your result was: {{final_test.result}}</h3>
+        {% else %}
+        <!-- final test button-->
+        <a class="btn btn-outline-success item" data-id="section5" id='final_button'>Final Test</a>
+        <h3 id="message_final_test"></h3>
+        {% endif %}
+        {% endif %}
+    </div>
+
+</div>
+{% endif %}
+
+<!-- Computer Science course -->
+{% if cname == "Computer Science" %}
+<div class="course_div">
+    <h2>Welcome to {{cname}}</h2>
+    <div id="items_list">
+        <a class="btn btn-outline-success item" data-id="section1">Intro to Computer Science</a>
+        <div class="alert alert-dark course_content_div" id="section1">
+
+            <h1>Intro to Computer Science</h1>
+            
+            <h4>What is?</h4>
+            The computer science is a science that teach us to understand the information's theory, what is a computer machine, how it works,
+            how to think with logic and create algotihms to solve problems 
+            <h4>To understand the computer science we first need to know the history:</h4>
+            The humans have always tried to create machines in a way that can help us with repetitive and tedious tasks, as proof of this we see machines
+            to perform tasks such as transporting or carrying things have always been there, but these machines have always had some problems for example
+            are machines that jusk work well for one task, these were great impediments until the creation of:
+            <h4>processor: </h4> 
+            <h6>The 12 of november of 1936 <strong>Alan Turing</strong> published the article <i><a href="https://londmathsoc.onlinelibrary.wiley.com/doi/pdf/10.1112/plms/s2-42.1.230">"ON COMPUTABLE NUMBERS, WITH AN APPLICATION TO
+            THE ENTSCHEIDUNGSPROBLEM"</a></i></h6>. In this article Turing introduce us to the Turing Machine, a Machine with which we can do an infinite number of mathematical operations
+            like add, subtract, multiply, etc. But the most amazing part is that this architecture is the same architecture used by computers today with the
+            Turing Machine: The turing machine is a machine compose by a tape a with some grid each grid represent a symbol (actualy a data) this symbols are values and 
+            operations that the machine will do, for example we can move symbols right or left, change the value, see past symbols, all depending of the length of the tape, so if we have 
+            an infinite tape we can do infinite operations, this (simple) sistem is actualy used in computers to move data in memory, do complicated operations, etc.
+            <img id="TuringMachine" src="{% static 'finalProject/TuringMachine.png' %}" width="60%" class="responsive">
+            <h4>Programming: </h4> 
+            <h6>In 1950 <strong>Kathleen Booth</strong> Did the first assembly language </h6>. 
+            Before 1950 the computer were made changing the sturcture of the computers, but this assembly language was the first "programming language" that help us to 
+            change the instructions in the computer without the need to modify its physical structure, but by giving instructions.
+            <h6>The August 10 of 1937 <strong>Claude Shannon</strong> Published <a href="https://dspace.mit.edu/bitstream/handle/1721.1/11173/34541425-MIT.pdf">"A symbolic analysis of relay and switching circuits"</a></h6>. 
+            In this article Shannon analyzed the characteristics of switching circuits and how using boolean algebra we could do any operation that we wanted
+            just with 1's and 0's, and this is how actaully the computers do the operations, but we don´t programm using binary, we actually use a specific syntax, well
+            the true is that we have, the
+            <h6>Programming language and interpreters </h6>
+            thess work as a bridge between a more human readable language (Programming language) and the computer (binary) the interpreters does that traslate task.
+        </div>
+
+        <a class="btn btn-outline-success item" data-id="section2">Programming Basics theory</a>
+        <div class="alert alert-dark course_content_div" id="section2">
+
+            <h1>Programming Basics theory</h1>
+            
+            <h4>Progmramming language</h4>
+            The programming language is the language that we use to talk with the computer and give instructions, there are many programming languages with many aplications
+            <h4>We can see aplications in: </h4>
+            <ul>
+                <li>Data Science: </li> There are many programming languages created to analyze data, datastructures, graph, statistics,and more...
+                Some examples are Python, R
+                <li>Web programming: </li> This is a common topic in programming, we can see many programming languages that run in the server as php or javascript, or we can see many 
+                languages that run in server side as python, java, javascript, php, and many more...
+                <li>science: </li> This is an interesting part, we can see many simulations on phisics, Telecomunicatios, mathematics, the programming languages that are used in this fields 
+                as in the others are almost any language, but usually we can see python, matlab, R, C, C++, and many more...
+                <li>Mobile aplications</li> It is a very common topic too in programming, as web is so common we interact everyday with this technologies, common language programming for this topic 
+                are Java and Kotlin for android, and swift for IOS, every day more options arise as javascript or python 
+                <li>Many more...</li>
+            </ul>
+            <h4>To understand Programming we need to know some basics:</h4>
+            <h4>Data types</h4> There are many data types and we need to know wich are the most common and when we can use it
+            those Data types are variable depending of the programming language as well as how we write them (Boolean R:TRUE,FALSE python: True, False, javascript: true, false).
+            <ul>
+                <li><h6>String: </h6></li> Usually in quotes like: "Hello"
+                <li><h6>Integer(Int): </h6></li> Integer number as 1 or 23
+                <li><h6>Float: </h6></li> Integer number as 1.5 or 23.56
+                <li><h6>Character: </h6></li> "D"
+                <li><h6>Boolean or Logic: </h6></li> 1,0 or True, False
+                <li><h6>Null: </h6></li> Not data: NA or if is not a number: NAN
+                <li><h6>Imaginary: </h6></li> 1+ i3
+            </ul>
+            <h4>Data arrays</h4> we can create data arrays as we saw in linear algebra like:
+            <ul>
+                <li><h6>Vector: </h6></li> [1,2,3,4] or ["Hello", "this", "is", "a", "vector"] 1 x n
+                <li><h6>Matrix: </h6></li> [[1,2,3],[4,5,6]] [["hello","this","is"],["a","matrix","now"]] m x n
+                <li><h6>Tensor: </h6></li> [[[1,2,3],[4,5,6]],[[7,8,9],[4,5,6]],[[7,8,9],[4,5,6]]] .. n x m x h x ...
+                <li><h6>Dictionary: </h6></li> {"brand": "Ford","model": "Mustang","year": 1964}
+            </ul>
+            <h6>Variables and Constants</h6> We can save this data in a memory and access to that memory using the variables and constants, those are nambes that 
+            we give tu that data to use it again in the code, if the data variates is a variable if not is a constant.
+            <h4>Operations: </h4> With those variables we can operate data, the operations could be:
+            <h6>Logical Operations</h6>
+            <ul>
+                <li>less than (<)</li>
+                <li>more than (>)</li>
+                <li>more or equal (<=) and less or equal >=</li>
+                <li>comparation (==) or (===)</li>
+                <li>diferent (!=)</li>
+                <li>not (!)</li>
+                <li>or (|)</li>
+                <li>and (&)</li>
+            </ul>               
+            <h6>arithmetic operations</h6>
+            <ul>
+                <li>*</li>
+                <li>+</li>
+                <li>/</li>
+                <li>-</li>
+                <li>%% (module)</li>
+            </ul>               
+            <h4>Those operations can be used in</h4>
+            <h6>conditionals if:</h6>
+            <pre class="code-box" style="margin-bottom: 30px;"><code class="language-javascript">
+if(any condition){
+    do this;
+}else if(other condition){
+    do this;
+}else{ 
+    do this;
+}
+            </code></pre>
+            <h6>for loop:</h6>
+            <pre class="code-box" style="margin-bottom: 30px;"><code class="language-javascript">
+for(i=0; i=6; i++){
+    Do this action till i=6;
+}
+//Or you can use it with arrays like
+a=[1,2,3,6,7,9,25]
+for(i in a){
+    do this action till i go trough all a vector
+}
+            </code></pre>
+            <h6>Functions</h6> Usually when you are programming parts of code are used many times, so you can use functions to just call that block of code:
+            <pre class="code-box" style="height:auto; margin-bottom: 30px;"><code class="language-javascript">
+function name_Function(usesThisVariable1,usesThisVariable2){
+    Do any thing with variables
+    return The result if any
+}
+            </code></pre>
+            
+        </div>
+
+        <a class="btn btn-outline-success item" data-id="section3">Programming Basics python</a>
+        <div class="alert alert-dark course_content_div" id="section3">
+
+            <h1>Programming Basics python</h1>
+            <h4>Introduction: </h4>
+            As we've said before python is one of the most used programming languages, this page is done using python in serverside,
+            is used for mobile applications, data science, desktop applications, etc... so we will introduce some of python coding in this part
+            <h4>define a variable and data types: </h4>
+            <pre class="code-box" style="height:auto; margin-bottom: 30px;"><code class="language-python">
+#This is a comment is code that is not running use -> #
+"""Or we can use three quotes for a 
+miltyline comment"""
+x = 2 #this is an int
+y = "This is an String"
+z = True #boolean
+f = 2.3 #float
+list1 = [1,2,3,4] #numeric list
+list2 = ["this", "is", "a", "list"] #String list
+tuple = (1,2,3,5) #like a list, but it doesn´t change
+dict = {"one":1 , "two":2, "string": "other String", "list":[1,2,3,4,5]} #a list relate data with names
+#you can print something on console using print:
+print(y)
+print(list1)
+#you can see the datatype as
+print(type(y))
+print(type(list1))
+#you can print any variable in text using f"and the variable inside -> {}"  as:
+print(f"the variable x have {x} and y have {y}")
+#or you can take values in any position like:
+print(f"the first value of list1 is {list1[0]} and the last is {list[-1]}")
+#if you are working in a dictionary use:
+print(f"the first value of dictionary is {dict["one"]} and the last is {dict["list"]}")
+            </code></pre>
+            <h4>arithmetic operations: </h4>
+            <pre class="code-box" style="height:auto; margin-bottom: 30px;"><code class="language-python">
+#The operations depend of the data type
+x=8
+y=19
+z= "hello"
+h= " world"
+#add:
+add = x + y
+#concatenate:
+concatenate= z + h
+#multiplication
+mul = x*y
+#division:
+div = x/y
+#substraction:
+sub = x-y
+#moduel: 
+mod = x%%y
+            </code></pre>
+
+            <h4>Logical operations: </h4>
+            <pre class="code-box" style="height:auto; margin-bottom: 30px;"><code class="language-python">
+#logical operations
+x=8
+y=19
+z= "hello"
+h= " world"
+#if condition is true returns True, else returns False
+#compare:
+False_compare = x == y
+False_compare_2 = z == h
+True_compare = x == 8
+#more or equal than 
+more_than_False = x >= y
+more_than_True = y >= x
+#less than 
+less_than_False = y <= x
+less_than_True = x <= y
+#or (if one condition is True, the result is True):
+or_True =  y > x or x == y
+or_False = x > y or x == y
+#and (if ons condition is false, the result is false):
+and_True = y > x and z == "hello"
+and_False = y > x and x == y
+            </code></pre>
+
+            <h4>If conditionals: </h4>
+            <pre class="code-box" style="height:auto; margin-bottom: 30px;"><code class="language-python">
+#We do an operation depending on the condition:
+x=8
+y=19
+z= "hello"
+h= " world"
+if (x > 8 and z == "hello"):
+    #is important! all inside the condition should be in the same line and some with space more than the condition line
+    print (f'the var x is more than {8} and z is {z}')
+elif (x == 8 and z == "hello"):
+    print (f'the var x is {x} and z is {z}')
+else:
+    print (f"the conditions were not true")
+            </code></pre>
+            <h4>for loop: </h4>
+            <pre class="code-box" style="height:auto; margin-bottom: 30px;"><code class="language-python">
+#The for loop can bu used in arrays as:
+x = [1,2,3,4,5,8,15] 
+y = ["this", "is", "a", "list"] #String list
+for i in y:
+    print(y)
+for y in x:
+    print(x)
+for i in range(0,3):
+    print(x[i] + " ")
+    print(y[i] + " ")
+            </code></pre>
+            <h4>functions: </h4>
+            <pre class="code-box" style="height:auto; margin-bottom: 30px;"><code class="language-python">
+#We use def to define a function as:
+def my_function(x,y):
+    z = x + y
+    return z
+x=32
+y=50
+#To call the function:
+z = my_function(x, y)
+print(f'the result is {z}')
+x2=34
+y2=500
+z2= my_function(x2,y2)
+print(f'the result is {z2}')
+            </code></pre>
+            <h4>Finally we have a interpreter</h4> Here you can try the code by copying and pasting or transwriting, hope you modify values or try your oun code:
+            <ul>
+                <li>if you have a big screen you can see two windows: at the right you have the cmd where you'll see you code results (don't forget to print the result) at left you can see your code you'll work there by writing 
+                    your own code and push run at the end to compile
+                </li>
+                <li>
+                    if you have a small screen you can see one windows: where you can edit the code if you code is done you can push run and the cmd will show you the result, to edit again the code click in edit.
+                </li>
+            </ul> 
+            <!-- interpreter -->
+            <iframe src="https://trinket.io/embed/python/ad8506ab61" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+            
+        </div>
+
+        <a class="btn btn-outline-success item" data-id="section4">UML diagrams</a>
+        <div class="alert alert-dark course_content_div" id="section4">
+            <h1>UML diagrams</h1>
+            <h4>What are UML diagrams?</h4>
+            The UML is a standard modeling language, are digrams to model projects usually used in software but it coul be used in any project, the UML diagrams are 
+            so important to avoid everyone to undertsand a project removing ambiguity because is an Universal language.
+            if you have doubts, you can consult the page: <a href="https://www.omg.org/spec/UML/">UML</a>
+            <h4>The most used UML are: </h4>
+            <ul>
+                <li>Class diagram</li>
+                <li>Sequence diagram</li>
+                <li>Use case diagram</li>
+                <li>Flow diagram</li>
+            </ul>
+            But there are many more
+            <h4>Class diagram: </h4>
+            The most common UML diagram is the Class Diagram, used in architectures where we can abstract the main characteristics of each 
+            component is such a import start in software develope, because help us with a good reference to start and a really good practice
+            this diagram is compose by:
+            <h6>Classes: </h6> The classes are the components of the architecture, a class is the object that describes a grup of objects with same structure and behavior.
+            We can see a class as a Block divide in three parts:
+            <ul>
+                <li>The first division (On the Top) is the title, the name of the class starting with a capital letter</li>
+                example: A class could be: Car
+                <li>The second division (in the middle) are the artibutes of the class (what artibutes this class have)</li>
+                example: For the car we could have: model, color, country, owner... 
+                <li>The last division are the methods, this are actions we can do with the atributes for our specific problem</li>
+                example: For the Car the atributes could be register_car, set_car_as_sell()
+            </ul>            
+            <h6>Relations/Conector</h6>
+            The class interact with other classes with relations like:
+            <ul>
+                <li>Asosiation in two directions:</li>
+                Is a relation between two classes and could be represntented as a line between like: User ans Car
+                We can represent the number of objects in the relation like 1 (if is one to one), M..N (if is M to N)
+                <li>Asosiation in one direction:</li>
+                This is represented as an arrow is a dependence relation like:  Car -> Wheels 
+                <li>Agregation:</li>
+                (A Class is compose by othe class is a hexagon) like: Company ♦- Departments
+                <li>Inheritance</li>
+                A class is a (other class); It's a arrow, but like a triangle, like:  Car -► Vehicle
+            </ul>
+            Examples:
+            <img id="TuringMachine" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Uml_classes_en.svg/300px-Uml_classes_en.svg.png" style="width: 30% !important" class="responsive">
+            Image from: <a href="https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Uml_classes_en.svg/300px-Uml_classes_en.svg.png">link</a>
+            <img id="TuringMachine" src="https://upload.wikimedia.org/wikipedia/commons/3/34/UML_class_diagram_example.svg" style="width: 30% !important" class="responsive">
+            Image from: <a href="https://upload.wikimedia.org/wikipedia/commons/3/34/UML_class_diagram_example.svg">link</a>
+        </div>
+        {% if user.is_authenticated %}
+        {% if final_test %}
+        <h3>You've sent you final exam, your result was: {{final_test.result}}</h3>
+        {% else %}
+        <!-- final test button-->
+        <a class="btn btn-outline-success item" data-id="section5" id='final_button'>Final Test</a>
+        <h3 id="message_final_test"></h3>
+        {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Data Science course -->
+{% if cname == "Data Science" %}
+<div class="course_div">
+
+    <h2>Welcome to {{cname}}</h2>
+    <div id="items_list">
+        <a class="btn btn-outline-success item" data-id="section1">R Programming</a>
+        <div class="alert alert-dark course_content_div" id="section1">
+
+            <h1>R Programming</h1>
+            
+            Note: If you want to keep going, you should know the basics concepts of programming, if you don´t know things like what is a variable, a programming language, funtions, etc. You can find info here: <a href="{% url 'course' 'Computer Science'%}"> Computer Science </a>
+            <h4>What is R programming?</h4>
+            R is the most used language for data analysis, brings many functions to process data, read, clean, search,
+            calculate statistics, models, and more. 
+            <h4>How to user R porgramming?</h4>
+            First you need and R interpreter so you can download R language in any version (the latest version have more features, but may not be stable, try o choose a stable version)
+            Then (is not necessary, but is better) you need a development environment, where you can see better your variables, results, etc.
+            the most used is R studio, is opern source, so you can download and install it for free 
+            <h4>Understand the Data:</h4>
+            <h6>Datasets</h6>
+            Once you have R studio installed you can start understandig the data, the data is usually shared trough a specific format so you can read it and organized by columns and rows as a table,
+            where each column is a field and each table is an instance this grupos of data are called datasets, 
+            there are many types of formar to share data, the most common are:
+            <ul>
+                <li>Comma Separated Values (CSV)</li>
+                <li>Excel files (XLS)</li>
+                <li>JavaScript Object Notation (JSON)</li>
+                <li>Structured Query Language (SQL)</li>
+                <li>tab-separated values (TSV)</li>
+            </ul> 
+            <h4>work with data R: </h4>
+            <pre class="code-box" style="height:auto; margin-bottom: 30px;"><code class="language-r">
+##########
+#Download the data
+##########
+#you can use the downloader librery (a library contains functions made by others to make it easy)
+#with downloader you can download the dataset from a url link
+#for example:
+install.packages("downloader") #to install the library
+library(downloader) #load the library
+#url of the dataset:
+url <- "https://courses.edx.org/asset-v1:UPValenciaX+DSC201x+3T2018+type@asset+block@tic-tac-toe.data.txt" 
+#name to save the data set:
+filename <- "tic-tac-toe.data.txt"
+#download the dataset and save with name filename
+download(url, destfile=filename)
+#also you can download the dataset by hand and put the data set on the same folder of your project to read it
+##########
+#Read the data
+##########
+#you can also define the sepration of the data in the function as for example: ,sep=" "
+#read.csv by default reads header and separated by comma
+ticData <- read.csv(filename,header = FALSE) # read the data and saves it in the variable ticData
+##########
+#View the data
+##########
+#you can see your data with:
+View(ticData)
+#just the first files with
+head(ticData)
+#this data is saved in a data frame, but this data doesn't have a columns names
+#this is not for all datasets, some data sets have the names, so you can read them as header = TRUE 
+##########
+#Name the columns (if no header)
+##########
+#create the name array of names: in c an array is <-c("the", "values")
+columnNames<-c("topl", "topm", "topr", "midl", "midm", "midr", "botl", "botm", "botr", "class")
+colnames(ticData)<-columnNames #Asign the column names to dataframe
+head(ticData)#see the new data frame
+names(ticData)#see the column names
+##########
+#Analyze the data
+##########
+#to select columns you can:
+top1Data <- ticData$topl
+#or 
+subsetTicData <- ticData["topl", "topm", "topr"]
+#you can see info of the data frame as:
+summary(ticData)
+#or most specific (if data is numeric) like:
+BMI <- 	data.frame(
+   gender = c("Male", "Male","Female"), 
+   height = c(152, 171.5, 165), 
+   weight = c(81,93, 78),
+   Age = c(42,38,26)
+)
+#all:
+summary(BMI)
+#specific:
+#mean of height
+mean(BMI$height)
+#min value of height
+min(BMI$height)
+#median of height
+median(BMI$height)
+##########
+#Plot
+##########
+#you can also plot as:
+#create a facotr
+factor<-factor(ticData$V1)
+#A factor is like a vecotr that just take 1 time each value
+#ej: if you have a, b, a, a, c, it will return a, b, c and saves how many times each value repeats
+factor
+#bar
+plot(factor)
+#pie
+pie(plot(factor))
+#histogram:
+hist(plot(factor))
+#For a scatter plot:
+#data:
+x=c(1,2,3,4,5,6,7,8,9,10)
+y=c(0.9,2.3,2.8,4.5,5.4,5.6,7.1,8.4,8.7,9.9)
+#data to data frame:
+data=data.frame(x=x,y=y)
+data
+#scatter:
+plot(data$x,data$y,col='blue')
+            </code></pre>  
+        </div>
+
+        <a class="btn btn-outline-success item" data-id="section2">Python Programming</a>
+        <div class="alert alert-dark course_content_div" id="section2">
+            <h1>Python Programming</h1>
+            
+            Note: in this course we assume that you know the basics of python programming, if you don´t know things like variable, define a variable, if conditionals, functions, etc. You can find info here: <a href="{% url 'course' 'Computer Science'%}"> Computer Science </a>
+            <h4>Why python?</h4>
+            As we've said before python is a multipurpose language is widely used in many fields, this is important because we can see many libraries and documentation for everyething, in data science, we have libraries made by 
+            big companies like google, facebook, etc. and many implementations in products used everyday. 
+            <h4>How to use python for data science?</h4>
+            We will be using the same concept of dataset that we saw in R programming, to read data, clean data and using algotihms we have meny libraries in python,
+            the most common and used are:
+            <ul>
+                <li>Pandas (read data, clean, analyze, ...)</li>
+                <li>Sklearn  (many algotihms, split data, ...)</li>
+                <li>Matplotlib (data visualization, graphics)</li>
+                <li>Numpy (numeric operations, matrix, vectors, ...)</li>
+                <li>Tensorflow (tensor operations, neural networks, ...)</li>
+                <li>many more</li>
+            </ul>
+            You can also use any develope environment, but we recomend the jupyter notebook, you can install it with <a href="https://www.anaconda.com/products/individual#Downloads">anaconda</a>
+            <h4>Understand the Data with pandas and matplotlib</h4>
+            To start working with libraries in python you need to install those libraries first, you can do that using pip (python 2) or pip3 (python3)
+            <h4>work with data Python: </h4>
+            <pre class="code-box" style="height:auto; margin-bottom: 30px;"><code class="language-python">
+"""
+install the libraries (optional) you can also use you cmd: pip install pandas
+"""
+!python -m pip install pandas
+!python -m pip install matplotlib
+
+"""
+import the libraries
+"""
+import pandas as pd
+import matplotlib.pyplot as plt
+
+"""
+#Read the data
+"""
+#or you can use the url of the file like: 
+covid_data= pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/03-17-2020.csv')
+# also you can download the dataset by hand and put the data set on the same folder of your project to read it using pandas:
+#you can also define the sepration of the data in the function as for example: ,sep=" "
+#read.csv by default reads header and separated by comma
+vuelos = pd.read_csv('./flights.csv') #you can use any route with a dataset in your pc
+#there are also libraries with data sets for you to try like:
+#using seaborn:
+!python -m pip install seaborn
+import seaborn as sns
+iris = sns.load_dataset('iris')
+
+"""
+View the data
+"""
+#see the columns:
+covid_data.columns
+#se the head:
+covid_data.head()
+iris.head()
+#see unique values
+iris.species.unique()
+
+"""
+Analyze the data
+"""
+#know data type each columns and columns with missing data:
+cols_with_miss=[col for col in covid_data.columns if covid_data[col].isnull().any()]
+print('the cols missing are: ',cols_with_miss)
+categoricals=covid_data.dtypes=='object'
+#print(categoricals)
+all_categorical_cols= list(categoricals[categoricals].index)
+print('the categorical columns are: ', all_categorical_cols)
+numerical_cols=[col for col in covid_data.columns if covid_data[col].dtypes in ['int64', 'float64']]
+print('the numcerical cols are: ', numerical_cols)
+#see a summary:
+vuelos.info()
+vuelos.describe()
+vuelos.passengers.describe() #summay of passengers
+#mean of some column
+vuelos['passengers'].mean()
+#add values
+vuelos.passengers.sum()
+
+"""
+Plot
+"""
+#scatter Plot
+vuelos.plot(kind='scatter', x='year', y='passengers')
+#using matplotlib:
+import matplotlib.pyplot as plt
+sns.FacetGrid(iris, hue="species", height=6).map(plt.scatter, 
+                                                'sepal_length',
+                                                'petal_length').add_legend()
+</code></pre>
+
+        </div>
+
+        <a class="btn btn-outline-success item" data-id="section3">Artificial Inteligence</a>
+        <div class="alert alert-dark course_content_div" id="section3">
+
+            <h1>Artificial Inteligence</h1>
+
+            <h4>What is Artifical Inteligence?</h4>
+            The artificial Inteligence (AI) is a field of the data science is so hard ti define what artificial inteligence is, because is hard to define what inteligent is, but we can say That
+            artificial inteligente is a system capable of imitating human behavior, it can be physical or cognitive
+            <h4>Machine Learning vs Aritificial Inteligence: </h4> is so important befor start with machine leargning, to know what machine learning is, and what is the difference with artificial inteligence.
+            We can define machine learning as the ability of a system to learn a behavior, or characteristics from data, then knowing this we e cannot confuse what is AI and what is machine learning,
+            for example if you can program a can program a robotic arm and say that it is artificial intelligence, but not machine learning, because it acts like a human, but he has not learned anything.
+            but for example if we train a model so that it learns to recognize patterns in images to, for example, detect a respiratory disease like pneumonie that is machine learning
+            <img id="TuringMachine" src="https://upload.wikimedia.org/wikipedia/commons/1/18/AI-ML-DL.png" style="width: 30% !important" class="responsive">
+
+        </div>
+
+        <a class="btn btn-outline-success item" data-id="section4">Machine Learning </a>
+        <div class="alert alert-dark course_content_div" id="section4">
+
+            <h1>Machine Learning</h1>
+            
+            As we saw in the las chapter we started with definitions of machine learning, and artificial inteligence, so for this chapter
+            you know what machine learning is, so we will know main the types of machine learning
+            <h4>Types of learning: </h4>
+            <ul>
+                <li>supervised learning:</li> 
+                When the algotihm learn from tagged data to predict unknow data, here we have two families of algorithms:
+                <ul>
+                    <li>Regression: </li> when data is numeric
+                    <li>Classification: </li> when data is chategorical
+                </ul>
+                <li>unsupervised learning:</li>
+                When we don't have tagged data so we want the algorithm to tell us features of the data, usually algotihms used in clustering.
+                <li>reinforcement learning:</li>
+                When the algotihm learn from his past actions and a reward used in games, or problems with no big datasets to train 
+            </ul>
+            <h4>Examples of algotihms of machine learning: </h4>
+            <h6>Using R we have many libreries like caret:</h6>
+            <h4>Machine learning algorithms in R: </h4>
+            <pre class="code-box" style="height:auto; margin-bottom: 30px;"><code class="language-r">
+####### logistic regression
+#we train the model to predict F with using variables x1,x2,x3 in the data frame mydata
+fit <- glm(F~x1+x2+x3,data=mydata,family=binomial())
+
+###### linear regression
+#we train the model to predict F with using variables x1,x2,x3 in the data frame mydata
+fit <- lm(F~x1+x2+x3,data=mydata)
+
+###### One hot ecoding
+#this is not an algotihm but is a way to change data from chategorical to numerical
+X <- model.matrix(~ x1 + leg, data=mydata)
+
+###### decision trees
+#install library
+install.packages("rpart")
+library(rpart)
+#we train to predict price with data zipcode, year, ..., SqFt in dataframe train using anova method
+model.cart<- rpart(price~zipcode+year+bath+bed+rooms+SqFt,method="anova",data=train)
+
+######Neural Network
+#install library
+install.packages("nnet")
+library(nnet)
+#we train to predict price with data zipcode, year, ..., SqFt in dataframe train using a size of 12 and a decay of 0.025
+model.nn<-nnet(price~zipcode+year+bath+bed+rooms+SqFt,data=train, size =12, skip=TRUE,linout=TRUE,decay=0.025)
+            </code></pre>            
+            <h4>Machine learning algorithms in R full examples using caret: </h4>
+            <pre class="code-box" style="height:auto; margin-bottom: 30px;"><code class="language-r">
+##WE WILL BE WORKING WITH THE ticData OF THE R CHAPTER
+#####################CARET#############################
+#######################################################
+#install.packages("C50")
+#install.packages("klaR")
+#install.packages("nnet")
+#install.packages("kernlab")
+library(caret)
+
+casosCompletos<-complete.cases(ticData)#verify complete cases
+casosCompletos[FALSE]
+#casosCompletos[TRUE]
+
+###############################################
+#2. Split data to train and validation
+###############################################
+indices<- createDataPartition(ticData$class, p =0.7, list = FALSE, times = 1)
+Train <- ticData[ indices,]
+Test <- ticData[-indices,]
+
+###############################################
+#3 Train Models(Naïve Bayes, Decision Tree, Neural Network, k-Nearest Neighbours y Support Vector Machine):
+###############################################
+ticData$class = as.factor(ticData$class)
+Train$class = as.factor(Train$class)
+Test$class = as.factor(Test$class)
+fitControl <- trainControl(method = "cv", number =10) 
+
+#install.packages("C50")
+#install.packages("klaR")
+#install.packages("nnet")
+#install.packages("kernlab")
+library(C50)
+library(klaR)
+library(nnet)
+library(kernlab)
+
+#Modelo de Naïve Bayes
+set.seed(100)
+nbEntrenado <- train(class ~., #data to predict ~ data to train 
+                     data =Train,   #dataframe with data
+                     method = "nb", #Model Naïve Bayes
+                     trControl = fitControl)
+nbEntrenado #print the final Naïve Bayes
+
+#Modelo de árbol de decisión
+set.seed(100) 
+C50Entrenado <- train(class ~., #data to predict ~ data to train
+                      data =Train, #dataframe with data
+                      method = "C5.0", #Model
+                      trControl = fitControl, 
+                      verbose = FALSE) 
+C50Entrenado #print the final decision tree model
+
+#Modelo Red Neronal
+set.seed(100) 
+nNetEntrenado <- train(class ~., #data to predict ~ data to train
+                       data =Train, 
+                       method = "nnet", #Model
+                       trControl = fitControl, 
+                       verbose = FALSE) 
+nNetEntrenado #print the final Neural Network model
+
+#Modelo Vecinos cercanos
+valores <- expand.grid(k = seq(1, 5, 0.5)) #se probara con k=1,1.5,2,2.5...5 
+set.seed(100) 
+knnEntrenado <- train(class ~., #data to predict ~ data to train
+                      data =Train, 
+                      method = 'knn', #Model
+                      tuneGrid = valores, #define k
+                      trControl = fitControl ) 
+knnEntrenado #print the final knn model
+
+#Support Vector Machine
+valores <- expand.grid(C = seq(0.5, 2, length = 10)) #se probara con c entre 0.5 y 2 (para tener mas modelos para comparar)
+set.seed(100) 
+svmEntrenado <- train(class ~., #data to predict ~ data to train 
+                      data =Train,   
+                      method = "svmLinear", #Model Support Vector Machine
+                      tuneGrid = valores, 
+                      trControl = fitControl) 
+svmEntrenado #print the final Support Vector Machine model
+            </code></pre>            
+            <h4>Machine learning algorithms in Python using sklearn: </h4>
+            <pre class="code-box" style="height:auto; margin-bottom: 30px;"><code class="language-r">
+import pandas as pd
+covid_data= pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_daily_reports/03-17-2020.csv')
+covid_data.columns
+covid_data.head()
+cols_with_miss=[col for col in covid_data.columns if covid_data[col].isnull().any()]
+print('the cols missing are: ',cols_with_miss)
+categoricals=covid_data.dtypes=='object'
+#print(categoricals)
+all_categorical_cols= list(categoricals[categoricals].index)
+print('the categorical columns are: ', all_categorical_cols)
+numerical_cols=[col for col in covid_data.columns if covid_data[col].dtypes in ['int64', 'float64']]
+print('the numcerical cols are: ', numerical_cols)
+#Ok, we understand what we have, let's play jeje 
+y=covid_data.Deaths #data to predict
+X=covid_data.drop(['Deaths'], axis=1)
+#to split:
+from sklearn.model_selection import train_test_split
+X_train_full, X_valid_full, y_train, y_valid = train_test_split(X, y, train_size=0.8, test_size=0.2,random_state=0)
+
+# Select categorical columns with relatively low cardinality (convenient but arbitrary)
+categorical_cols = [cname for cname in X_train_full.columns if X_train_full[cname].nunique() < 10 and 
+                    X_train_full[cname].dtype == "object"]
+print('the categorical cols with low carinality are: ', categorical_cols)
+# Select numerical columns
+numerical_cols=[col for col in X_train_full.columns if X_train_full[col].dtypes in ['int64', 'float64']]
+print('the numerical cols keep being: ',numerical_cols) 
+
+# Keep selected columns only(basicaly all in this case, but we should use lower cardinality)
+my_cols = categorical_cols + numerical_cols
+X_train = X_train_full[my_cols].copy()
+X_valid = X_valid_full[my_cols].copy()
+#but we have some holes as we saw before, it's better to preprocess
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import OneHotEncoder
+
+# Preprocessing for numerical data
+numerical_transformer = SimpleImputer(strategy='constant')
+
+# Preprocessing for categorical data
+categorical_transformer = Pipeline(steps=[
+    #('imputer', SimpleImputer(strategy='constant')),
+    ('imputer', SimpleImputer(strategy='most_frequent')), #in this case is important impute because there are valuest null
+    ('onehot', OneHotEncoder(handle_unknown='ignore')) #the one hot encoder gives a 1 or 0 to aech class
+])
+
+# Preprocess both categorical and numerical, is a wall to organize
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', numerical_transformer, numerical_cols),
+        ('cat', categorical_transformer, categorical_cols)
+    ])
+#our model
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.tree import DecisionTreeRegressor
+from xgboost import XGBRegressor
+
+model = XGBRegressor()
+#model=DecisionTreeRegressor(random_state=1)
+#Define our model
+#model = RandomForestRegressor(n_estimators=100, random_state=0)
+
+# put both (model and processor) in a pipeline
+my_pipeline = Pipeline(steps=[('preprocessor', preprocessor),
+                                ('model', model)
+                                ])
+
+# train
+my_pipeline.fit(X_train, y_train)
+
+from sklearn.metrics import mean_absolute_error
+# predict to test if it works with validation data
+preds = my_pipeline.predict(X_valid)
+
+# Evaluate the model with MAE:
+score = mean_absolute_error(y_valid, preds)
+print('MAE:', score)
+
+import plotly.express as px
+import plotly.io as pio
+pio.templates.default = "plotly_dark"
+
+grouped = covid_data.groupby('Last Update')['Last Update', 'Confirmed', 'Deaths'].sum().reset_index()
+fig = px.line(grouped, x="Last Update", y="Confirmed",
+             title="Worldwide Confirmed Novel Coronavirus(COVID-19) Cases Over Time")
+fig.show()
+            </code></pre>            
+
+        </div>
+
+        {% if user.is_authenticated %}
+
+        {% if final_test %}
+        <h3>You've sent you final exam, your result was: {{final_test.result}}</h3>
+        {% else %}
+        <!-- final test button-->
+        <a class="btn btn-outline-success item" data-id="section5" id='final_button'>Final Test</a>
+        <h3 id="message_final_test"></h3>
+        {% endif %}
+        {% endif %}
+
+    </div>
+
+</div>
+{% endif %}
+
+<!-- Communications course -->
+{% if cname == "Communications" %}
+<div class="course_div">
+    <h2>Welcome to {{cname}}</h2>
+    <div id="items_list">
+        <a class="btn btn-outline-success item" data-id="section1">Telecomunicatios Theory</a>
+        <div class="alert alert-dark course_content_div" id="section1">
+
+            <h1>Telecomunicatios Theory</h1>
+
+            <h4>What are telecomunications?</h4>
+            Are a way to send and recive information at a long distance. 
+            Historically looking for ways to communicate over long distances has been a human need, from cases such as smoke signals or screams to current communication methods using electromagnetic waves in radio communication frequencies, 
+            or even in the infrared or visible spectrum for fiber optics.
+            <h4>frequency spectrum: </h4>
+            actually there are many sistems that use electromagenitic communications, like the mobile data, or radio, but we have just one air, so we need to define 
+            how to divide the service, this division is made by frequency, each frequency have differents characteristics like attenuation or transmission capacity, to regulate this 
+            each goverment has a entity that regulates this, but we have some standarizations, an example of the electromagnetic spectrum is:
+            <img id="TuringMachine" src="https://image.shutterstock.com/image-illustration/electromagnetic-spectrum-vector-diagram-different-260nw-158016716.jpg"  class="responsive">
+            <h4>architecture of a radio comunication</h4>
+            A radio comunication usually have the same process, from when we capture the data in the sender to when we recive the data, the architecture is something like:
+            <ol>
+                <li>Transducer:</li>
+                Get info from phisical like a sound to electric, for example a microphone
+                <li>Modulator in tensmision: </li>
+                We need to madulate the information so we can transmit it to avoid the noise, interference, etc.
+                <li>Transmition antenna: </li>
+                Element that conver the electrical information to electromagenitic waves
+                <li>Channe: </li>
+                The air
+                <li>Reception antenna: </li>
+                Element that conver the electromagenitic waves to electrical information
+                <li>Demodulatior</li>
+                <li>Transducer in Reception: </li> to display the data as it was before.
+            </ol>
+            There are more parts in a communication like filters, redundancy systems, and more, but those are the main in a radiocomunication.
+            <h4>Actual communications architecture:</h4>
+            The actual model to tranmit data used in internet is the TCP/IP
+            <img id="TuringMachine" src="https://thumbs.dreamstime.com/z/network-models-28866004.jpg"  class="responsive">
+            
+
+            
+
+        </div>
+
+        <a class="btn btn-outline-success item" data-id="section2">Information Theory</a>
+        <div class="alert alert-dark course_content_div" id="section2">
+
+            <h1>Information Theory</h1>
+            <h4>What is the information theory?</h4>
+            In communications we have a system of layers that are part of the actual communications protocol used for example in internet, the chapter we saw Before
+            was the fisical layer, but protocols as internet uses many others protocols, for example this page uses http, so  lot of information can be lost in the process
+            to prevent this from happening, information theories are used.
+            <h4>When information theory starts?</h4>
+            The information theory startis in 1948 with the publication of claude sahnnon: <a href="https://pure.mpg.de/rest/items/item_2383162_7/component/file_2456978/content">A mathematical theory of communication</a></h6>
+            The information theory of shannon gives a new workd for communications giving some rules and techniques to send information, with a better rate of success bits in reception, and even in some casesto reconstruc the data
+            an example of a therorem of shannon is the:
+            <h6>Shannon Entropy</h6>
+            <img id="TuringMachine" src="https://thumbs.dreamstime.com/z/information-theory-shannon-equation-abstract-illustration-84187853.jpg"  class="responsive">
+
+        </div>
+
+        <a class="btn btn-outline-success item" data-id="section3">Digital Communications</a>
+        <div class="alert alert-dark course_content_div" id="section3">
+
+            <h1>Digital Communications</h1>
+            <h4> what are digital communications?</h4>
+            The digital communications are comunications that uses 1 and 0 to send data on a electromagnetic wave of high frequency, there are many digital modulations 
+            each modulation uses different techniques to variate amplitude, frequency, phase, or combinations, examples of digital modulations are
+            <ul>
+                <li>QAM</li>
+                <li>PSK</li>
+                <li>ASK</li>
+                <li>Many more</li>
+            </ul>
+            <h4>QAM modulation</h4>
+            <h6> Example of a digital communication channel in matlab</h6>
+            <pre><code class="language-matlab">
+%%
+clc;
+bits=16; % # de bits a generar
+bits=int64(bits);
+x = bitsGenerator(bits);%Genera arreglo con # bits aleatorios
+modulation_Order=16; %orden de la modulación
+
+
+IDEAL CHANNEL 
+%Gráfica de la Señal de la información
+%Para graficarla debemos definir un tiempo contra el cual graficarla
+bp=.000001; %primero se define un periodo de bits
+t1=bp/100:bp/100:100*length(x)*(bp/100);%y se genera un intervalo de tiempo para cada bit y se grafican 100 puntos por cada bit
+bit=[];
+for n=1:length(x)%recorremos los bits y generamos 100 valores de cada uno para graficarlos
+    if x(n)==1;
+        se=ones(1,100);
+    else x(n)==0;
+        se=zeros(1,100);
+    end
+    bit=[bit se]; %finalmente vamos uniendo los arreglos de a 100 bits 
+end
+
+figure();
+plot(t1,bit,'linewidth',2.5); %graficamos t vs bit
+title('Señal de Información');
+
+%Modulacion M-QAM
+y = qam_modulator(modulation_Order,x)%Retorna arreglo con magnitud y fase
+
+%filtro coseno alzado
+%filtro tx
+rolloff = 0;      %Factor de rolloff 
+span = modulation_Order;      %Número de símbolos
+sps = 1;		%Número de muestras por símbolo
+rrcFilter = rcosdesign(rolloff, span, sps);  	%Creación del filtro
+txFiltext = upfirdn(y, rrcFilter, sps)     %Proceso de filtrado raíz de coseno alzado con datos aleatorios adicionales
+
+txFilt = zeros(1, length(y)); %Se crea un vector que almacene la señal filtrada sin los datos adicionales aleatorios
+l1 = length(txFilt)+modulation_Order/2;		%Límite del ciclo for
+for i = 1 + modulation_Order/2:l1        %Ciclo for para eliminar valores aleatorios adicionales
+    v1 = txFiltext(i);		%Variable adicional que toma los valores de la señal
+    aux = i - modulation_Order/2;		%Variable auxiliar para almacenar los datos en txFilt
+    txFilt(1,aux)=v1;		%Almacena los valores de la señal sin los datos adicionales
+end
+
+%Forma de onda qam
+p=txFilt;%Señal modulada
+M=modulation_Order;%Orden de modulación
+x1=[0:M-1];%
+
+sym=0:1:M-1;
+RR=real(p)%Parte Real
+II=imag(p)%Parte Imaginaria
+sp=bp*2;
+sr=1/sp;
+f=sr*2;%frecuencia señales senos y cosenos
+t=sp/100:sp/100:sp;
+ss=length(t);
+m=[];
+% aplicamos an.cos(wt)+bn.sin(wt)
+for (k=1:1:length(RR))%Recorremos los componentes de arreglo
+yr=RR(k)*cos(2*pi*f*t);%La parte real la multiplicamos a un coseno
+yim=II(k)*sin(2*pi*f*t);%La parte imaginaria a un seno
+y=yr+yim; %y las sumamos
+m=[m y];%concatenamos cada función
+end
+tt=sp/100:sp/100:sp*length(RR);
+figure();
+plot(tt,m);%Graficamos la señal en senos y cosenos vs tt
+title('forma de onda QAM');
+ylabel('amplitud');
+xlabel('time');
+
+%filtro rx
+rxFiltext = upfirdn(txFilt, rrcFilter, 1, sps)
+rxFilt = zeros(1, length(txFilt));
+for i = 1 + modulation_Order/2:l1
+    v1 = rxFiltext(i);
+    aux = i - modulation_Order/2;
+    rxFilt(1,aux)=v1;
+end
+
+%Demodulación M-QAM
+x_demodulated = qam_demodulator(modulation_Order,rxFilt)
+
+bit=[];
+for n=1:length(x_demodulated)
+    if x_demodulated(n)==1;
+        se=ones(1,100);
+    else x_demodulated(n)==0;
+        se=zeros(1,100);
+    end
+    bit=[bit se];
+end
+figure();
+plot(t1,bit,'linewidth',2.5);
+title('Señal de Información en Rx');
+
+va=0;
+for i=1:length(x)
+    if x_demodulated(i)~=x(i)
+        va = va +1 ;
+    end
+end
+fprintf('bits errados : %i',va);
+
+
+CHANNEL WITH AWGN AND MULTIPATH
+%%distorsionamos la fase
+sym=0:1:M-1;
+RR=real(p)
+II=imag(p);%sin multitrayectoria
+II=imag(p)+(max(p).*(rand(1,length(imag(p)))).*(-1.*randi([0 1],1,length(imag(p)))))
+sp=bp*2;
+sr=1/sp;
+f=sr*2;
+t=sp/100:sp/100:sp;
+ss=length(t);
+m2=[];
+for (k=1:1:length(RR))
+    yr=RR(k)*cos(2*pi*f*t);
+    yim=II(k)*sin(2*pi*f*t);
+    y=yr+yim;
+    m2=[m2 y];
+end
+%%distorsionamos la amplitud%%
+smul = 0.2.*m2;
+figure();
+plot(tt,m,tt,smul);
+legend('original','multitrayectoria')
+title('forma de onda  QAM con distorsión de amplitud');
+ylabel('amplitud');
+xlabel('time');
+
+%%%%%Agregamos awgn a las señales%%%%
+rxSig = awgn (m, 10);
+rxSigMultiT = awgn (smul, 10);
+
+figure();
+plot(tt,rxSig)
+hold on
+plot(tt,rxSigMultiT)
+title('Señales por Multitrayectoria');
+ylabel('amplitud');
+xlabel('time');
+hold off
+
+%sumamos las señales
+rxSig = rxSig + rxSigMultiT;
+figure();
+plot(tt,rxSig)
+title('Forma de Onda QAM con AWGN y Multitrayectoria');
+ylabel('amplitud');
+xlabel('time');
+
+%Filtro rx
+rxFiltext = upfirdn(rxSig, rrcFilter, 1, sps)		%Proceso de filtrado raíz de coseno alzado con datos aleatorios adicionales
+rxFilt = zeros(1, length(txFilt));		%Se crea un vector que almacene la señal filtrada sin los datos adicionales aleatorios
+for i = 1 + modulation_Order/2:l1		 %Ciclo for para eliminar valores aleatorios adicionales
+v1 = rxFiltext(i);		%Variable adicional que toma los valores de la señal
+aux = i - modulation_Order/2;		%Variable auxiliar para almacenar los datos en txFilt
+rxFilt(1,aux)=v1;		%Almacena los valores de la señal sin los datos adicionales
+end
+
+%%%%%%%%%%%%%%%%%%ecualizador%%%%%%%%%%%%%%%%%%%%
+eqlms = lineareq(6,lms(0.03)); 
+eqlms.SigConst = sigConst; 
+eqlms.ResetBeforeFiltering = 0;
+trainData = randi([0 M-1],1000,1);
+trainSig = qammod(trainData,M,'UnitAveragePower',true);
+rxSig = rchan(trainSig);
+[~,~,errorSig] = equalize(eqlms,rxSig,trainSig);
+plot(abs(errorSig))
+title('Error Estimate, LMS Equalizer')
+xlabel('Symbols')
+ylabel('Amplitude')
+
+% Equalize the received signal.
+rxEq = equalize(eqlms,rxFilt);
+
+%Demodulación M-QAM
+x_demodulated = qam_demodulator(modulation_Order,rxEq);
+
+t1=bp/100:bp/100:100*length(x_demodulated)*(bp/100);%se grafica en el mismo intervalo que en el primer paso y se repite exactamente el mismo proceso en el ciclo for
+bit=[];
+for n=1:length(x_demodulated)
+if x_demodulated(n)==1;
+se=ones(1,100);
+else x_demodulated(n)==0;
+se=zeros(1,100);
+end
+bit=[bit se];
+end
+figure();
+plot(t1,bit,'linewidth',2.5);
+title('Señal de Información en Rx Canal con AWGN y Multitrayectoria');
+
+%bits errados por multitrayectoria y awgn
+va=0;
+for i=1:length(x)
+if x_demodulated(i)~=x(i)
+va = va + 1 ;
+end
+end
+fprintf('bits errados : %i',va);
+
+[number,ratio] = biterr(x,x_demodulated)
+            </code></pre>
+            <h6>Example of 16-QAM:</h6>
+            <img id="TuringMachine" src="https://upload.wikimedia.org/wikipedia/commons/d/de/FDD_16-QAM.png"  class="responsive">
+
+        </div>
+
+        <a class="btn btn-outline-success item" data-id="section4">Analogic Communications</a>
+        <div class="alert alert-dark course_content_div" id="section4">
+
+            <h1>Analogic Communications</h1>
+            <h4>What are analogic communications:</h4>
+            Analogic communications are just like the digital communications, but doesn't tranmit bits, it transmit the original signal in a continuous wave, for example
+            the voice, there are techniques to modulate the Analogic communications too.
+            <h4>Annalogic modulations:</h4>
+            <ul>
+                <li>Amplitude modulation (AM)</li>
+                <li>frequency Modulation (FM)</li>
+                <li>Phase moddulation (PM)</li>
+            </ul>
+            <h6>Example of AM:</h6>
+            <img id="TuringMachine" src="https://upload.wikimedia.org/wikipedia/commons/2/2f/AM_100%25_modulation_depth.png"  class="responsive">
+            <h6>Example of FM:</h6>
+            <img id="TuringMachine" src="https://upload.wikimedia.org/wikipedia/commons/3/35/Sagedusmodulatsioon_%28FM%29.jpg"  class="responsive">
+            
+        </div>
+
+        {% if user.is_authenticated %}
+
+        {% if final_test %}
+        <h3>You've sent you final exam, your result was: {{final_test.result}}</h3>
+        {% else %}
+        <!-- final test button-->
+        <a class="btn btn-outline-success item" data-id="section5" id='final_button'>Final Test</a>
+        <h3 id="message_final_test"></h3>
+        {% endif %}
+        {% endif %}
+
+    </div>
+</div>
+{% endif %}
+
+
+
+
+<!-- final test-->
+<div class="test_final_div" id="section5">
+    <div class="card text-white bg-primary mb-3 col-xs-12 col-sm-8 col-md-5 test_div">
+        <a class="btn btn-danger item" data-id="section5" id="back_btn">Back to course</a>
+        <h3 style="padding-bottom:50px;">To end the course fill the next test:</h3>
+        <form id="test_3" class="test_form_div">
+            {% csrf_token %}
+            <!-- question 1-->
+            <div class="form-group">
+                {% if cname == "Statistics" %}
+                <span><strong> 1. When we should use statistical inference? </strong></span>
+                {% endif %}
+                {% if cname == "Computer Science" %}
+                <span><strong> 1. What is a Turing Machine? </strong></span>
+                {% endif %}
+                {% if cname == "Data Science" %}
+                <span><strong> 1. What is a dataset? </strong></span>
+                {% endif %}
+                {% if cname == "Communications" %}
+                <span><strong> 1. Who started the information theory? </strong></span>
+                {% endif %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question1" id="option0" value="1">
+                    <label class="form-check-label" for="option0">
+                        {% if cname == "Statistics" %}
+                        1. when the population is large but we can take a considerable sample
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        1. A processor
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        1. an organized group of data with a specific format
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        1. Claude Shannon
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question1" id="option1" value="2">
+                    <label class="form-check-label" for="option1">
+                        {% if cname == "Statistics" %}
+                        2. When the population is small
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        2. A full PC
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        2. An excel table
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        2. Alan Turing
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question1" id="option2" value="3">
+                    <label class="form-check-label" for="option2">
+                        {% if cname == "Statistics" %}
+                        3. when we can't take a sample
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        3. A  pc memory
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        3. an SQL database
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        3. Guglielmo Marconi
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question1" id="option3" value="4" checked>
+                    <label class="form-check-label" for="option3">
+                        {% if cname == "Statistics" %}
+                        4. when we have a small sample of the population
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        4. a keyboard
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        4. An artice about data science
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        4. Nikola Tesla
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question1" id="option4" value="5">
+                    <label class="form-check-label" for="option4">
+                        {% if cname == "Statistics" %}
+                        5. when the population are animals
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        5. A nice screen
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        5. A new protocol to comunicate
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        5. André-Marie Ampère
+                        {% endif %}
+
+                    </label>
+                </div>
+            </div>
+            <!-- question 2-->
+            <div class="form-group">
+                {% if cname == "Statistics" %}
+                <span><strong> 2. How to write the probability of an event C given a event B: </strong></span>
+                {% endif %}
+                {% if cname == "Computer Science" %}
+                <span><strong> 2. what data type is this -> "Hello" </strong></span>
+                {% endif %}
+                {% if cname == "Data Science" %}
+                <span><strong> 2. Which is the first step when we build a predictor </strong></span>
+                {% endif %}
+                {% if cname == "Communications" %}
+                <span><strong> 2. The digital communication uses: </strong></span>
+                {% endif %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question2" id="option0" value="1">
+                    <label class="form-check-label" for="option0">
+                        {% if cname == "Statistics" %}
+                        1. C n B
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        1. Integer
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        1. Find a good algotihm
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        1. Numeric values between 1 and infinite
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question2" id="option1" value="2">
+                    <label class="form-check-label" for="option1">
+                        {% if cname == "Statistics" %}
+                        2. C | B
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        2. String
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        2. Find a good dataset
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        2. Binary data
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question2" id="option2" value="3">
+                    <label class="form-check-label" for="option2">
+                        {% if cname == "Statistics" %}
+                        3. B | C
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        3. Float
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        3. Read the data
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        3. Strings
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question2" id="option3" value="4" checked>
+                    <label class="form-check-label" for="option3">
+                        {% if cname == "Statistics" %}
+                        4. B n C
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        4. Boolean
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        4. Calculate the type of data
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        4. Decimal values
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question2" id="option4" value="5">
+                    <label class="form-check-label" for="option4">
+                        {% if cname == "Statistics" %}
+                        5. B u C
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        5. Imaginary
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        5. Verify the predictions of the algotihm
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        5. A continuous wave
+                        {% endif %}
+                    </label>
+                </div>
+            </div>
+
+            <!-- question 3-->
+            <div class="form-group">
+                {% if cname == "Statistics" %}
+                <span><strong> 3. what is the maximum number of dimensions that an matrix can have (m and n are >
+                        1):</strong></span>
+                {% endif %}
+                {% if cname == "Computer Science" %}
+                <span><strong> 3. How do we define a Function in python: </strong></span>
+                {% endif %}
+                {% if cname == "Data Science" %}
+                <span><strong> 3. The most common language used in data science is: </strong></span>
+                {% endif %}
+                {% if cname == "Communications" %}
+                <span><strong> 3. Element that conver the electrical information to electromagenitic waves </strong></span>
+                {% endif %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question3" id="option0" value="1">
+                    <label class="form-check-label" for="option0">
+                        {% if cname == "Statistics" %}
+                        1. 1 x n
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        1. function name():
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        1. javascript
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        1. Modulator
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question3" id="option1" value="2">
+                    <label class="form-check-label" for="option1">
+                        {% if cname == "Statistics" %}
+                        2. m x 1
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        2. function name(){
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        2. Java
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        2. Demodulator
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question3" id="option2" value="3">
+                    <label class="form-check-label" for="option2">
+                        {% if cname == "Statistics" %}
+                        3. n x m 
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        3. def name():
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        3. R
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        3. Antenna
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question3" id="option3" value="4" checked>
+                    <label class="form-check-label" for="option3">
+                        {% if cname == "Statistics" %}
+                        4. n x m x n x ...
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        4. Def name(){
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        4. C++
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        4. Transducer
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question3" id="option4" value="5">
+                    <label class="form-check-label" for="option4">
+                        {% if cname == "Statistics" %}
+                        5. m x n x m x n
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        5 function(name):
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        5. C
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        5. Channel
+                        {% endif %}
+                    </label>
+                </div>
+            </div>
+            <!-- question 4-->
+            <div class="form-group">
+                {% if cname == "Statistics" %}
+                <span><strong> 4. Are types of regression: </strong></span>
+                {% endif %}
+                {% if cname == "Computer Science" %}
+                <span><strong> 4. What is a variable? </strong></span>
+                {% endif %}
+                {% if cname == "Data Science" %}
+                <span><strong> 4. Is a system capable of imitating human behavior, it can be physical or cognitive: </strong></span>
+                {% endif %}
+                {% if cname == "Communications" %}
+                <span><strong> 4. Is a Analogic modulation: </strong></span>
+                {% endif %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question4" id="option0" value="1">
+                    <label class="form-check-label" for="option0">
+                        {% if cname == "Statistics" %}
+                        1. Linear regression
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        1. A data type
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        1. Programming
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        1. QAM
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question4" id="option1" value="2">
+                    <label class="form-check-label" for="option1">
+                        {% if cname == "Statistics" %}
+                        2. Logistic regression
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        2. A type of condition
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        2. Data science
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        2. FSK
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question4" id="option2" value="3">
+                    <label class="form-check-label" for="option2">
+                        {% if cname == "Statistics" %}
+                        3. Nonlinear regression
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        3. An operation
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        3. Machine learning
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        3. QPSK
+                        {% endif %}
+
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question4" id="option3" value="4" checked>
+                    <label class="form-check-label" for="option3">
+                        {% if cname == "Statistics" %}
+                        4. All are correct
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        4. A name given to a space in the memory, to save and load data
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        4. Artificial Inteligence
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        4. FM
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question4" id="option4" value="5">
+                    <label class="form-check-label" for="option4">
+                        {% if cname == "Statistics" %}
+                        5. Just Linear regession and Logistic regression
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        5. A block of code like a function
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        5. Computer Science
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        5. None of the above
+                        {% endif %}
+                    </label>
+                </div>
+            </div>
+            <!-- question 5-->
+            <div class="form-group">
+                {% if cname == "Statistics" %}
+                <span><strong> 5. What is the highest value (no percentage) probability an event can have?:
+                    </strong></span>
+                {% endif %}
+                {% if cname == "Computer Science" %}
+                <span><strong> 5. wich is the result of: False and (True or (True or False)) </strong></span>
+                {% endif %}
+                {% if cname == "Data Science" %}
+                <span><strong> 5. Is the ability of a system to learn a behavior, or characteristics from data </strong></span>
+                {% endif %}
+                {% if cname == "Communications" %}
+                <span><strong> 5. Variates the Amplitude of the signal: </strong></span>
+                {% endif %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question5" id="option0" value="1">
+                    <label class="form-check-label" for="option0">
+                        {% if cname == "Statistics" %}
+                        1. 99
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        1. True
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        1. Programming
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        1. PM
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question5" id="option1" value="2">
+                    <label class="form-check-label" for="option1">
+                        {% if cname == "Statistics" %}
+                        2. 100
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        2. Those operators doesn't exist 
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        2. Data Science
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        2. FM
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question5" id="option2" value="3">
+                    <label class="form-check-label" for="option2">
+                        {% if cname == "Statistics" %}
+                        3. infinite
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        3. Nothing Because this is not a python syntax
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        3. Computer Science
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        3. FSK
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question5" id="option3" value="4" checked>
+                    <label class="form-check-label" for="option3">
+                        {% if cname == "Statistics" %}
+                        4. 0.99
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        4. True
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        4. Artifical Inteligence
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        4. All of the above
+                        {% endif %}
+
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question5" id="option4" value="5">
+                    <label class="form-check-label" for="option4">
+                        {% if cname == "Statistics" %}
+                        5. 1
+                        {% endif %}
+                        {% if cname == "Computer Science" %}
+                        5. False
+                        {% endif %}
+                        {% if cname == "Data Science" %}
+                        5. Machine learning
+                        {% endif %}
+                        {% if cname == "Communications" %}
+                        5. AM
+                        {% endif %}
+                    </label>
+                </div>
+            </div>
+            <!-- question 6-->
+            <div class="form-group">
+                <span><strong> 6. How do you rate the {{cname}} course? </strong></span>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question6" id="option0" value="1">
+                    <label class="form-check-label" for="option0">
+                        1 The info was terrible
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question6" id="option1" value="2">
+                    <label class="form-check-label" for="option1">
+                        2 There is good information, but it is very little
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question6" id="option2" value="3" checked>
+                    <label class="form-check-label" for="option2">
+                        3 The info was good, but not all
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question6" id="option3" value="4">
+                    <label class="form-check-label" for="option3">
+                        4 The info was good
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question6" id="option4" value="5">
+                    <label class="form-check-label" for="option4">
+                        5 The info was excelent
+                    </label>
+                </div>
+            </div>
+            <input type="hidden" name="version" value="3">
+            <div class="form-group">
+                <input type="hidden" name="course" value="{{cname}}">
+                <input class="btn btn-success login_button" id="submit_f_test" type="submit" value="Send">
+            </div>
+        </form>
+    </div>
+</div>
+
+
+{% else %}
+{% if user.is_authenticated %}
+
+<!-- Test 1 to Register in the course-->
+<div class="survey_div">
+    <div class="card text-white bg-primary mb-3 col-xs-12 col-sm-8 col-md-5 test_div">
+        <h3 style="padding-bottom:50px ;">to register in the course fill the survey:</h3>
+        <form action="{% url 'make_test' %}" method="post" id="test_1" class="test_form_div">
+            {% csrf_token %}
+            <!-- question 1-->
+            <div class="form-group">
+                <span><strong> 1. Tell us your knowledge in {{cname}} in general: </strong></span>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question1" id="option0" value="1">
+                    <label class="form-check-label" for="option0">
+                        1 (I don't know nothig about)
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question1" id="option1" value="2">
+                    <label class="form-check-label" for="option1">
+                        2 (I've heard about this topic)
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question1" id="option2" value="3">
+                    <label class="form-check-label" for="option2">
+                        3 (I just know the basics)
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question1" id="option3" value="4" checked>
+                    <label class="form-check-label" for="option3">
+                        4 (I Know about {{cname}} )
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question1" id="option4" value="5">
+                    <label class="form-check-label" for="option4">
+                        5 (I'm profesional in {{cname}})
+                    </label>
+                </div>
+            </div>
+            <!-- question 2-->
+            <div class="form-group">
+                <span><strong> 2. What to you spect to enroll in {{cname}}'s world: </strong></span>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question2" id="option0" value="1">
+                    <label class="form-check-label" for="option0">
+                        1 (I don't care, it's just a homework)
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question2" id="option1" value="2">
+                    <label class="form-check-label" for="option1">
+                        2 (I need an specific topic of {{cname}})
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question2" id="option2" value="3">
+                    <label class="form-check-label" for="option2">
+                        3 (I want to learn some topics of {{cname}})
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question2" id="option3" value="4" checked>
+                    <label class="form-check-label" for="option3">
+                        4 (I want to learn some)
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question2" id="option4" value="5">
+                    <label class="form-check-label" for="option4">
+                        5 (So exited, I love {{cname}})
+                    </label>
+                </div>
+            </div>
+            <!-- question 3-->
+            <div class="form-group">
+                <span><strong> 3. Where did you heard about the {{cname}} course: </strong></span>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question3" id="option0" value="1">
+                    <label class="form-check-label" for="option0">
+                        A Friend told me about
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question3" id="option1" value="2">
+                    <label class="form-check-label" for="option1">
+                        Social Media
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question3" id="option2" value="3">
+                    <label class="form-check-label" for="option2">
+                        an e-mail
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question3" id="option3" value="4" checked>
+                    <label class="form-check-label" for="option3">
+                        A suggestion of my teacher
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question3" id="option4" value="5">
+                    <label class="form-check-label" for="option4">
+                        Others
+                    </label>
+                </div>
+            </div>
+            <!-- question 4-->
+            <div class="form-group">
+                <span><strong> 4. What is your educational level: </strong></span>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question4" id="option0" value="1">
+                    <label class="form-check-label" for="option0">
+                        high School
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question4" id="option1" value="2">
+                    <label class="form-check-label" for="option1">
+                        University Student
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question4" id="option2" value="3">
+                    <label class="form-check-label" for="option2">
+                        University Degree
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question4" id="option3" value="4" checked>
+                    <label class="form-check-label" for="option3">
+                        postgraduate
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question4" id="option4" value="5">
+                    <label class="form-check-label" for="option4">
+                        doctorate
+                    </label>
+                </div>
+            </div>
+            <!-- question 5-->
+            <div class="form-group">
+                <span><strong> 5. Tell us your age: </strong></span>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question5" id="option0" value="1">
+                    <label class="form-check-label" for="option0">
+                        0-15 Years old
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question5" id="option1" value="2">
+                    <label class="form-check-label" for="option1">
+                        16-25 Years old
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question5" id="option2" value="3">
+                    <label class="form-check-label" for="option2">
+                        26-35 Years old
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question5" id="option3" value="4" checked>
+                    <label class="form-check-label" for="option3">
+                        36-50 Years old
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question5" id="option4" value="5">
+                    <label class="form-check-label" for="option4">
+                        51 Years old or more
+                    </label>
+                </div>
+            </div>
+            <!-- question 6-->
+            <div class="form-group">
+                <span><strong> 6. Where are you from? </strong></span>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question6" id="option0" value="1">
+                    <label class="form-check-label" for="option0">
+                        1 America
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question6" id="option1" value="2">
+                    <label class="form-check-label" for="option1">
+                        2 Asia
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question6" id="option2" value="3" checked>
+                    <label class="form-check-label" for="option2">
+                        3 Africa
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question6" id="option3" value="4">
+                    <label class="form-check-label" for="option3">
+                        4 Europa
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="question6" id="option4" value="5">
+                    <label class="form-check-label" for="option4">
+                        5 Oceania
+                    </label>
+                </div>
+            </div>
+            <input type="hidden" name="version" value="1">
+            <div class="form-group">
+                <input type="hidden" name="course" value="{{cname}}">
+                <input class="btn btn-success login_button" type="submit" value="Send">
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+{% endif %}
+{% endif %}
+
+
+
+<!-- comments -->
+<div id="comments_div">
+    <h5>Comments: </h5>
+
+    {% if user.is_authenticated %}
+    <!--New Post -->
+    <div class="post-form">
+        <form id="post-form">
+            <strong>{{request.user.username}}: </strong>
+            <textarea class="form-control" id="post-content" rows="4" placeholder="Type a new post..."
+                style="width: 60%;"></textarea>
+            <input id="post-course" type="hidden" value="{{cname}}">
+            <input type="submit" class="btn btn-info" id="submitButton" style="margin-bottom: 30px ;" />
+        </form>
+        <div id="result" style="color:tomato;">
+            <!-- in case of error sending message here-->
+        </div>
+    </div>
+    {% endif %}
+    <!-- comments -->
+    <div class="posts-all">
+        {% for post in page_obj %}
+        <div class="card" style="width: 80vw; padding-top: 15px;" id="card-{{post.id}}">
+            <div class="card-body" style="color: black; ">
+                <h5 class="card-text" id="content-{{post.id}}">{{ post.content }}</h5>
+                {% if user.is_authenticated %}
+                <h7 class="card-title"><a href="{% url 'profile' post.user %}" class="card-link"> {{post.user}}</a></h7>
+                |
+                {% else %}
+                <h7 class="card-title"><a href="{% url 'login' %}" class="card-link"> {{post.user}}</a></h7> |
+                {% endif %}
+                <h7 class="card-title"> in: <a href="{% url 'course' post.course %}"
+                        class="card-link">{{post.course}}</a> </h7> |
+                <h7 class="card-title">at: {{post.timestamp}}</h7>|
+            </div>
+        </div>
+        <br>
+        {% empty %}
+        <div class="alert alert-warning" role="alert">
+            <h3>No comments :(</h3>
+        </div>
+        {% endfor %}
+        <!-- Pagination -->
+        <div class="pagination">
+            <span class="step-links">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+
+                        {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li>
+                        <li class="page-item"><a class="page-link"
+                                href="?page={{ page_obj.previous_page_number }}">previous</a></li>
+                        {% endif %}
+
+                        {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">next</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">last
+                                &raquo;</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </span>
+        </div>
+        <div>
+            <span class="current" style="color: black;">
+                <strong>{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</strong>
+            </span>
+        </div>
+
+    </div>
+
+
+
+    {% endblock%}
+
+    {% block script %}
+    <script src="{% static 'finalProject/course.js' %}"></script>
+    <script src="{% static 'finalProject/prism.js' %}"></script>
+    <script src="{% static 'finalProject/linear_regression.js' %}"></script>
+    {% endblock %}
